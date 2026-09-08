@@ -2,10 +2,49 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta name="theme-color" content="#016837">
+
+  <meta
+    name="mobile-web-app-capable"
+    content="yes"
+  >
+
+  <meta
+    name="apple-mobile-web-app-capable"
+    content="yes"
+  >
+
+  <meta
+    name="apple-mobile-web-app-status-bar-style"
+    content="default"
+  >
+
+  <meta
+    name="apple-mobile-web-app-title"
+    content="Reactiv8 Quote"
+  >
+
+  <link
+    rel="icon"
+    type="image/webp"
+    href="logo.webp"
+  >
+
+  <link
+    rel="apple-touch-icon"
+    href="logo.webp"
+  >
+
   <title>Reactiv8 Quick Roof Quote</title>
 
   <style>
+
     * {
       box-sizing: border-box;
     }
@@ -33,7 +72,7 @@
       background: white;
       border-radius: 18px;
       overflow: hidden;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.10);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.10);
       border: 1px solid #e5e5e5;
     }
 
@@ -133,7 +172,6 @@
       padding: 12px;
       background: #fff;
       cursor: pointer;
-      transition: all 0.2s ease;
       text-align: center;
       min-height: 150px;
       display: flex;
@@ -141,15 +179,10 @@
       justify-content: space-between;
     }
 
-    .pitch-card:hover {
-      border-color: var(--reactiv8-light-green);
-      background: #f8fcf5;
-    }
-
     .pitch-option input[type="radio"]:checked + .pitch-card {
       border-color: var(--reactiv8-dark-green);
       background: #f2f7ef;
-      box-shadow: 0 0 0 3px rgba(139, 195, 73, 0.18);
+      box-shadow: 0 0 0 3px rgba(139,195,73,0.18);
     }
 
     .roof-svg {
@@ -163,7 +196,6 @@
       font-size: 14px;
       font-weight: bold;
       color: var(--reactiv8-dark-green);
-      margin-top: 2px;
     }
 
     .pitch-value {
@@ -172,7 +204,8 @@
       margin-top: 2px;
     }
 
-    .calculate-button {
+    .calculate-button,
+    .share-button {
       width: 100%;
       margin-top: 26px;
       padding: 16px;
@@ -183,6 +216,13 @@
       border-radius: 9px;
       background: var(--reactiv8-dark-green);
       color: white;
+    }
+
+    .share-button {
+      display: none;
+      background: var(--reactiv8-light-green);
+      color: #000;
+      margin-top: 14px;
     }
 
     .results {
@@ -280,6 +320,7 @@
     }
 
     @media (max-width: 600px) {
+
       body {
         padding: 0;
         background: white;
@@ -306,7 +347,8 @@
         font-size: 18px;
       }
 
-      .calculate-button {
+      .calculate-button,
+      .share-button {
         font-size: 20px;
       }
 
@@ -315,9 +357,20 @@
       }
 
       .pitch-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 9px;
+      }
+
+      .pitch-card {
+        min-height: 130px;
+        padding: 9px;
+      }
+
+      .roof-svg {
+        height: 62px;
       }
     }
+
   </style>
 </head>
 
@@ -326,6 +379,7 @@
 <div class="calculator">
 
   <div class="header">
+
     <img
       src="logo.webp"
       alt="Reactiv8 Shingle Rejuvenation"
@@ -339,15 +393,17 @@
     <div class="subtitle-small">
       Fast approximate roof measurement & pricing
     </div>
+
   </div>
+
 
   <div class="content">
 
-    <!-- CUSTOMER INFORMATION -->
 
     <div class="section-title">
       Customer Information
     </div>
+
 
     <label for="customerName">
       Homeowner Name
@@ -360,8 +416,10 @@
       autocomplete="name"
     >
 
+
     <label for="address">
-      Property Address <span class="required">*</span>
+      Property Address
+      <span class="required">*</span>
     </label>
 
     <input
@@ -370,6 +428,7 @@
       placeholder="Example: 123 Main Street, Shippensburg, PA"
       autocomplete="street-address"
     >
+
 
     <label for="phone">
       Phone Number
@@ -381,6 +440,7 @@
       placeholder="Example: 717-555-1234"
       autocomplete="tel"
     >
+
 
     <label for="email">
       Email
@@ -394,11 +454,11 @@
     >
 
 
-    <!-- ROOF MEASUREMENT -->
 
     <div class="section-title">
       Roof Measurement
     </div>
+
 
     <label for="length">
       House Length (feet)
@@ -412,6 +472,7 @@
       step="0.5"
     >
 
+
     <label for="width">
       House Width (feet)
     </label>
@@ -424,146 +485,346 @@
       step="0.5"
     >
 
+
     <label for="overhang">
       Approximate Roof Overhang
     </label>
 
     <select id="overhang">
-      <option value="0">None</option>
-      <option value="0.5">6 inches</option>
-      <option value="1" selected>1 foot</option>
-      <option value="1.5">1.5 feet</option>
-      <option value="2">2 feet</option>
+
+      <option value="0">
+        None
+      </option>
+
+      <option value="0.5">
+        6 inches
+      </option>
+
+      <option value="1" selected>
+        1 foot
+      </option>
+
+      <option value="1.5">
+        1.5 feet
+      </option>
+
+      <option value="2">
+        2 feet
+      </option>
+
     </select>
+
 
     <label>
       Approximate Roof Pitch
     </label>
 
+
     <div class="pitch-grid">
 
-      <label class="pitch-option">
-        <input type="radio" name="pitch" value="3">
-        <div class="pitch-card">
-          <svg class="roof-svg" viewBox="0 0 140 70">
-            <polyline points="15,52 70,36 125,52"
-              fill="none"
-              stroke="#016837"
-              stroke-width="6"
-              stroke-linecap="round"
-              stroke-linejoin="round"/>
-            <line x1="20" y1="58" x2="120" y2="58"
-              stroke="#8BC349"
-              stroke-width="4"/>
-          </svg>
-          <div class="pitch-name">Low</div>
-          <div class="pitch-value">3/12</div>
-        </div>
-      </label>
 
       <label class="pitch-option">
-        <input type="radio" name="pitch" value="4" checked>
+
+        <input
+          type="radio"
+          name="pitch"
+          value="3"
+        >
+
         <div class="pitch-card">
-          <svg class="roof-svg" viewBox="0 0 140 70">
-            <polyline points="15,54 70,30 125,54"
+
+          <svg
+            class="roof-svg"
+            viewBox="0 0 140 70"
+          >
+
+            <polyline
+              points="15,52 70,36 125,52"
               fill="none"
               stroke="#016837"
               stroke-width="6"
               stroke-linecap="round"
-              stroke-linejoin="round"/>
-            <line x1="20" y1="58" x2="120" y2="58"
+              stroke-linejoin="round"
+            />
+
+            <line
+              x1="20"
+              y1="58"
+              x2="120"
+              y2="58"
               stroke="#8BC349"
-              stroke-width="4"/>
+              stroke-width="4"
+            />
+
           </svg>
-          <div class="pitch-name">Typical</div>
-          <div class="pitch-value">4/12</div>
+
+          <div class="pitch-name">
+            Low
+          </div>
+
+          <div class="pitch-value">
+            3/12
+          </div>
+
         </div>
+
       </label>
 
-      <label class="pitch-option">
-        <input type="radio" name="pitch" value="6">
-        <div class="pitch-card">
-          <svg class="roof-svg" viewBox="0 0 140 70">
-            <polyline points="15,56 70,23 125,56"
-              fill="none"
-              stroke="#016837"
-              stroke-width="6"
-              stroke-linecap="round"
-              stroke-linejoin="round"/>
-            <line x1="20" y1="60" x2="120" y2="60"
-              stroke="#8BC349"
-              stroke-width="4"/>
-          </svg>
-          <div class="pitch-name">Medium</div>
-          <div class="pitch-value">6/12</div>
-        </div>
-      </label>
+
 
       <label class="pitch-option">
-        <input type="radio" name="pitch" value="8">
+
+        <input
+          type="radio"
+          name="pitch"
+          value="4"
+          checked
+        >
+
         <div class="pitch-card">
-          <svg class="roof-svg" viewBox="0 0 140 70">
-            <polyline points="15,58 70,15 125,58"
+
+          <svg
+            class="roof-svg"
+            viewBox="0 0 140 70"
+          >
+
+            <polyline
+              points="15,54 70,30 125,54"
               fill="none"
               stroke="#016837"
               stroke-width="6"
               stroke-linecap="round"
-              stroke-linejoin="round"/>
-            <line x1="20" y1="62" x2="120" y2="62"
+              stroke-linejoin="round"
+            />
+
+            <line
+              x1="20"
+              y1="58"
+              x2="120"
+              y2="58"
               stroke="#8BC349"
-              stroke-width="4"/>
+              stroke-width="4"
+            />
+
           </svg>
-          <div class="pitch-name">Steep</div>
-          <div class="pitch-value">8/12</div>
+
+          <div class="pitch-name">
+            Typical
+          </div>
+
+          <div class="pitch-value">
+            4/12
+          </div>
+
         </div>
+
       </label>
 
-      <label class="pitch-option">
-        <input type="radio" name="pitch" value="10">
-        <div class="pitch-card">
-          <svg class="roof-svg" viewBox="0 0 140 70">
-            <polyline points="15,60 70,10 125,60"
-              fill="none"
-              stroke="#016837"
-              stroke-width="6"
-              stroke-linecap="round"
-              stroke-linejoin="round"/>
-            <line x1="20" y1="64" x2="120" y2="64"
-              stroke="#8BC349"
-              stroke-width="4"/>
-          </svg>
-          <div class="pitch-name">Very Steep</div>
-          <div class="pitch-value">10/12</div>
-        </div>
-      </label>
+
 
       <label class="pitch-option">
-        <input type="radio" name="pitch" value="12">
+
+        <input
+          type="radio"
+          name="pitch"
+          value="6"
+        >
+
         <div class="pitch-card">
-          <svg class="roof-svg" viewBox="0 0 140 70">
-            <polyline points="15,60 70,5 125,60"
+
+          <svg
+            class="roof-svg"
+            viewBox="0 0 140 70"
+          >
+
+            <polyline
+              points="15,56 70,23 125,56"
               fill="none"
               stroke="#016837"
               stroke-width="6"
               stroke-linecap="round"
-              stroke-linejoin="round"/>
-            <line x1="20" y1="64" x2="120" y2="64"
+              stroke-linejoin="round"
+            />
+
+            <line
+              x1="20"
+              y1="60"
+              x2="120"
+              y2="60"
               stroke="#8BC349"
-              stroke-width="4"/>
+              stroke-width="4"
+            />
+
           </svg>
-          <div class="pitch-name">Extreme</div>
-          <div class="pitch-value">12/12</div>
+
+          <div class="pitch-name">
+            Medium
+          </div>
+
+          <div class="pitch-value">
+            6/12
+          </div>
+
         </div>
+
       </label>
+
+
+
+      <label class="pitch-option">
+
+        <input
+          type="radio"
+          name="pitch"
+          value="8"
+        >
+
+        <div class="pitch-card">
+
+          <svg
+            class="roof-svg"
+            viewBox="0 0 140 70"
+          >
+
+            <polyline
+              points="15,58 70,15 125,58"
+              fill="none"
+              stroke="#016837"
+              stroke-width="6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+
+            <line
+              x1="20"
+              y1="62"
+              x2="120"
+              y2="62"
+              stroke="#8BC349"
+              stroke-width="4"
+            />
+
+          </svg>
+
+          <div class="pitch-name">
+            Steep
+          </div>
+
+          <div class="pitch-value">
+            8/12
+          </div>
+
+        </div>
+
+      </label>
+
+
+
+      <label class="pitch-option">
+
+        <input
+          type="radio"
+          name="pitch"
+          value="10"
+        >
+
+        <div class="pitch-card">
+
+          <svg
+            class="roof-svg"
+            viewBox="0 0 140 70"
+          >
+
+            <polyline
+              points="15,60 70,10 125,60"
+              fill="none"
+              stroke="#016837"
+              stroke-width="6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+
+            <line
+              x1="20"
+              y1="64"
+              x2="120"
+              y2="64"
+              stroke="#8BC349"
+              stroke-width="4"
+            />
+
+          </svg>
+
+          <div class="pitch-name">
+            Very Steep
+          </div>
+
+          <div class="pitch-value">
+            10/12
+          </div>
+
+        </div>
+
+      </label>
+
+
+
+      <label class="pitch-option">
+
+        <input
+          type="radio"
+          name="pitch"
+          value="12"
+        >
+
+        <div class="pitch-card">
+
+          <svg
+            class="roof-svg"
+            viewBox="0 0 140 70"
+          >
+
+            <polyline
+              points="15,60 70,5 125,60"
+              fill="none"
+              stroke="#016837"
+              stroke-width="6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+
+            <line
+              x1="20"
+              y1="64"
+              x2="120"
+              y2="64"
+              stroke="#8BC349"
+              stroke-width="4"
+            />
+
+          </svg>
+
+          <div class="pitch-name">
+            Extreme
+          </div>
+
+          <div class="pitch-value">
+            12/12
+          </div>
+
+        </div>
+
+      </label>
+
 
     </div>
 
 
-    <!-- PRICING -->
 
     <div class="section-title">
       Pricing
     </div>
+
 
     <label for="pricePerSqFt">
       Price Per Square Foot ($)
@@ -577,6 +838,7 @@
       step="0.01"
     >
 
+
     <button
       type="button"
       class="calculate-button"
@@ -586,60 +848,92 @@
     </button>
 
 
-    <!-- RESULTS -->
 
     <div class="results">
+
 
       <div
         class="customer-summary"
         id="customerSummary"
-      ></div>
+      >
+      </div>
+
 
       <div class="result-label">
         ESTIMATED ROOF SIZE
       </div>
 
-      <div class="area" id="roofArea">
+
+      <div
+        class="area"
+        id="roofArea"
+      >
         —
       </div>
 
-      <div class="divider"></div>
+
+      <div class="divider">
+      </div>
+
 
       <div class="result-label">
         ESTIMATED REACTIV8 PRICE
       </div>
 
-      <div class="price" id="quotePrice">
+
+      <div
+        class="price"
+        id="quotePrice"
+      >
         —
       </div>
+
 
       <div
         class="price-rate"
         id="priceRate"
-      ></div>
+      >
+      </div>
+
 
       <div
         class="calculation-details"
         id="calculationDetails"
-      ></div>
+      >
+      </div>
+
 
     </div>
 
 
-    <!-- NOTES -->
+
+    <button
+      type="button"
+      class="share-button"
+      id="shareButton"
+      onclick="shareQuote()"
+    >
+      SHARE QUOTE
+    </button>
+
+
 
     <div class="section-title">
       Customer Notes
     </div>
 
+
     <label for="notes">
       Notes
     </label>
+
 
     <textarea
       id="notes"
       placeholder="Example: Roof approximately 12–15 years old. Homeowner interested in treatment. Follow up Tuesday after 5 PM."
     ></textarea>
+
+
 
     <button
       type="button"
@@ -649,100 +943,187 @@
       Clear Calculator
     </button>
 
+
+
     <div class="note">
-      This calculator provides an approximate roof measurement for straightforward residential roofs.
-      Complex roofs, multiple additions, dormers, unusual roof shapes or multiple roof pitches should be reviewed by Reactiv8 before final pricing.
+
+      This calculator provides an approximate roof measurement
+      for straightforward residential roofs.
+
+      Complex roofs, multiple additions, dormers, unusual roof
+      shapes or multiple roof pitches should be reviewed by
+      Reactiv8 before final pricing.
+
     </div>
 
+
   </div>
 
+
+
   <div class="footer">
+
     Reactiv8 • Roof Maintenance & Shingle Rejuvenation
+
   </div>
+
 
 </div>
 
 
+
 <script>
 
+
+let currentQuoteText = "";
+
+
 function getSelectedPitch() {
+
   const selectedPitch =
-    document.querySelector('input[name="pitch"]:checked');
+    document.querySelector(
+      'input[name="pitch"]:checked'
+    );
 
   return selectedPitch
     ? parseFloat(selectedPitch.value)
     : 4;
+
 }
+
 
 
 function calculateQuote() {
 
+
   const customerName =
-    document.getElementById("customerName").value.trim();
+    document
+      .getElementById("customerName")
+      .value
+      .trim();
+
 
   const address =
-    document.getElementById("address").value.trim();
+    document
+      .getElementById("address")
+      .value
+      .trim();
+
 
   const phone =
-    document.getElementById("phone").value.trim();
+    document
+      .getElementById("phone")
+      .value
+      .trim();
+
 
   const email =
-    document.getElementById("email").value.trim();
+    document
+      .getElementById("email")
+      .value
+      .trim();
+
 
   const length =
     parseFloat(
-      document.getElementById("length").value
+      document
+        .getElementById("length")
+        .value
     );
+
 
   const width =
     parseFloat(
-      document.getElementById("width").value
+      document
+        .getElementById("width")
+        .value
     );
+
 
   const overhang =
     parseFloat(
-      document.getElementById("overhang").value
+      document
+        .getElementById("overhang")
+        .value
     );
+
 
   const pitch =
     getSelectedPitch();
 
+
   const pricePerSqFt =
     parseFloat(
-      document.getElementById("pricePerSqFt").value
+      document
+        .getElementById("pricePerSqFt")
+        .value
     );
 
 
+
   if (!address) {
-    alert("Please enter the property address.");
-    document.getElementById("address").focus();
+
+    alert(
+      "Please enter the property address."
+    );
+
+    document
+      .getElementById("address")
+      .focus();
+
     return;
+
   }
+
+
 
   if (!length || length <= 0) {
-    alert("Please enter the house length.");
+
+    alert(
+      "Please enter the house length."
+    );
+
     return;
+
   }
+
+
 
   if (!width || width <= 0) {
-    alert("Please enter the house width.");
+
+    alert(
+      "Please enter the house width."
+    );
+
     return;
+
   }
 
+
+
   if (!pricePerSqFt || pricePerSqFt <= 0) {
-    alert("Please enter a valid price per square foot.");
+
+    alert(
+      "Please enter a valid price per square foot."
+    );
+
     return;
+
   }
+
 
 
   const roofLength =
     length + (overhang * 2);
 
+
   const roofWidth =
     width + (overhang * 2);
 
+
   const footprint =
     roofLength * roofWidth;
+
 
   const pitchMultiplier =
     Math.sqrt(
@@ -753,131 +1134,351 @@ function calculateQuote() {
       )
     );
 
+
   const roofArea =
     footprint * pitchMultiplier;
+
 
   const price =
     roofArea * pricePerSqFt;
 
 
-  document.getElementById("roofArea").innerText =
-    Math.round(roofArea).toLocaleString()
-    + " sq ft";
+  const roundedArea =
+    Math.round(roofArea);
 
 
-  document.getElementById("quotePrice").innerText =
-    "$"
-    + Math.round(price).toLocaleString();
+  const roundedPrice =
+    Math.round(price);
 
 
-  document.getElementById("priceRate").innerText =
-    "Based on $"
-    + pricePerSqFt.toFixed(2)
-    + " per sq ft";
+
+  document
+    .getElementById("roofArea")
+    .innerText =
+
+      roundedArea.toLocaleString()
+      + " sq ft";
 
 
-  document.getElementById("calculationDetails").innerHTML =
-    "Adjusted roof footprint: "
-    + Math.round(footprint).toLocaleString()
-    + " sq ft"
-    + "<br>"
-    + "Pitch multiplier: "
-    + pitchMultiplier.toFixed(3)
-    + "<br>"
-    + "Selected roof pitch: "
-    + pitch
-    + "/12";
+
+  document
+    .getElementById("quotePrice")
+    .innerText =
+
+      "$"
+      + roundedPrice.toLocaleString();
+
+
+
+  document
+    .getElementById("priceRate")
+    .innerText =
+
+      "Based on $"
+      + pricePerSqFt.toFixed(2)
+      + " per sq ft";
+
+
+
+  document
+    .getElementById("calculationDetails")
+    .innerHTML =
+
+      "Adjusted roof footprint: "
+      + Math.round(footprint).toLocaleString()
+      + " sq ft"
+
+      + "<br>"
+
+      + "Pitch multiplier: "
+      + pitchMultiplier.toFixed(3)
+
+      + "<br>"
+
+      + "Selected roof pitch: "
+      + pitch
+      + "/12";
+
 
 
   let summary = "";
 
+
   if (customerName) {
+
     summary +=
       "<strong>Homeowner:</strong> "
       + escapeHtml(customerName)
       + "<br>";
+
   }
 
+
   summary +=
+
     "<strong>Property:</strong> "
     + escapeHtml(address);
 
+
   if (phone) {
+
     summary +=
+
       "<br><strong>Phone:</strong> "
       + escapeHtml(phone);
+
   }
 
+
   if (email) {
+
     summary +=
+
       "<br><strong>Email:</strong> "
       + escapeHtml(email);
+
   }
+
 
 
   const customerSummary =
-    document.getElementById("customerSummary");
+    document.getElementById(
+      "customerSummary"
+    );
+
 
   customerSummary.innerHTML = summary;
-  customerSummary.style.display = "block";
+
+  customerSummary.style.display =
+    "block";
+
+
+
+  currentQuoteText =
+
+    "Reactiv8 Roof Maintenance Quote\n\n"
+
+    + (
+      customerName
+        ? "Homeowner: "
+          + customerName
+          + "\n"
+        : ""
+    )
+
+    + "Property: "
+    + address
+    + "\n\n"
+
+    + "Estimated roof size: "
+    + roundedArea.toLocaleString()
+    + " sq ft\n"
+
+    + "Estimated Reactiv8 treatment: $"
+    + roundedPrice.toLocaleString()
+    + "\n\n"
+
+    + "Thank you for considering Reactiv8.";
+
+
+
+  document
+    .getElementById("shareButton")
+    .style.display = "block";
+
 }
+
+
+
+async function shareQuote() {
+
+
+  if (!currentQuoteText) {
+
+    alert(
+      "Please calculate the quote first."
+    );
+
+    return;
+
+  }
+
+
+  if (navigator.share) {
+
+    try {
+
+      await navigator.share({
+
+        title:
+          "Reactiv8 Roof Maintenance Quote",
+
+        text:
+          currentQuoteText
+
+      });
+
+      return;
+
+    }
+
+    catch (error) {
+
+      if (error.name === "AbortError") {
+        return;
+      }
+
+    }
+
+  }
+
+
+
+  try {
+
+    await navigator.clipboard.writeText(
+      currentQuoteText
+    );
+
+    alert(
+      "Quote copied. You can now paste it into a text message or email."
+    );
+
+  }
+
+  catch (error) {
+
+    alert(
+      currentQuoteText
+    );
+
+  }
+
+}
+
 
 
 function escapeHtml(value) {
 
   return value
+
     .replaceAll("&", "&amp;")
+
     .replaceAll("<", "&lt;")
+
     .replaceAll(">", "&gt;")
+
     .replaceAll('"', "&quot;")
+
     .replaceAll("'", "&#039;");
+
 }
+
 
 
 function resetCalculator() {
 
-  document.getElementById("customerName").value = "";
 
-  document.getElementById("address").value = "";
+  document
+    .getElementById("customerName")
+    .value = "";
 
-  document.getElementById("phone").value = "";
 
-  document.getElementById("email").value = "";
+  document
+    .getElementById("address")
+    .value = "";
 
-  document.getElementById("length").value = "";
 
-  document.getElementById("width").value = "";
+  document
+    .getElementById("phone")
+    .value = "";
 
-  document.getElementById("overhang").value = "1";
 
-  document.getElementById("pricePerSqFt").value = "1.05";
+  document
+    .getElementById("email")
+    .value = "";
 
-  document.getElementById("notes").value = "";
 
-  document.getElementById("roofArea").innerText = "—";
+  document
+    .getElementById("length")
+    .value = "";
 
-  document.getElementById("quotePrice").innerText = "—";
 
-  document.getElementById("priceRate").innerText = "";
+  document
+    .getElementById("width")
+    .value = "";
 
-  document.getElementById("calculationDetails").innerHTML = "";
 
-  document.getElementById("customerSummary").innerHTML = "";
+  document
+    .getElementById("overhang")
+    .value = "1";
 
-  document.getElementById("customerSummary").style.display =
-    "none";
+
+  document
+    .getElementById("pricePerSqFt")
+    .value = "1.05";
+
+
+  document
+    .getElementById("notes")
+    .value = "";
+
+
+  document
+    .getElementById("roofArea")
+    .innerText = "—";
+
+
+  document
+    .getElementById("quotePrice")
+    .innerText = "—";
+
+
+  document
+    .getElementById("priceRate")
+    .innerText = "";
+
+
+  document
+    .getElementById("calculationDetails")
+    .innerHTML = "";
+
+
+  document
+    .getElementById("customerSummary")
+    .innerHTML = "";
+
+
+  document
+    .getElementById("customerSummary")
+    .style.display = "none";
+
+
+  document
+    .getElementById("shareButton")
+    .style.display = "none";
+
+
+  currentQuoteText = "";
+
 
   const defaultPitch =
     document.querySelector(
       'input[name="pitch"][value="4"]'
     );
 
+
   if (defaultPitch) {
+
     defaultPitch.checked = true;
+
   }
+
 }
 
+
 </script>
+
 
 </body>
 </html>
