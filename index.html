@@ -1,1281 +1,1121 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#016837">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Reactiv8 Quote">
-
-  <link rel="icon" type="image/webp" href="logo.webp">
-  <link rel="apple-touch-icon" href="logo.webp">
-
-  <title>Reactiv8 Quick Roof Quote</title>
-
-  <!-- Used only for the Download PDF option. No API key is required. -->
-  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    :root {
-      --reactiv8-dark-green: #016837;
-      --reactiv8-light-green: #8BC349;
-      --reactiv8-black: #000000;
-      --reactiv8-medium-green: #08663B;
-      --reactiv8-light-bg: #F5F8F4;
-      --reactiv8-border: #D7DDD8;
-      --reactiv8-warning-bg: #FFF8E7;
-      --reactiv8-warning-border: #E2B93B;
-    }
-
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: var(--reactiv8-light-bg);
-      margin: 0;
-      padding: 24px 15px;
-      color: var(--reactiv8-black);
-    }
-
-    button,
-    input,
-    select,
-    textarea {
-      font-family: inherit;
-    }
-
-    .calculator {
-      max-width: 560px;
-      margin: auto;
-      background: white;
-      border-radius: 18px;
-      overflow: hidden;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.10);
-      border: 1px solid #e5e5e5;
-    }
-
-    .header {
-      background: white;
-      text-align: center;
-      padding: 24px 24px 18px;
-      border-top: 7px solid var(--reactiv8-dark-green);
-    }
-
-    .logo {
-      display: block;
-      width: 100%;
-      max-width: 330px;
-      height: auto;
-      margin: 0 auto 10px;
-    }
-
-    .subtitle {
-      color: var(--reactiv8-medium-green);
-      font-size: 18px;
-      font-weight: bold;
-      margin-top: 6px;
-    }
-
-    .subtitle-small {
-      color: #666;
-      font-size: 14px;
-      margin-top: 5px;
-    }
-
-    .content {
-      padding: 10px 26px 28px;
-    }
-
-    .section-title {
-      margin-top: 22px;
-      margin-bottom: 5px;
-      font-size: 18px;
-      color: var(--reactiv8-dark-green);
-      font-weight: bold;
-      border-bottom: 2px solid var(--reactiv8-light-green);
-      padding-bottom: 7px;
-    }
-
-    label {
-      display: block;
-      margin-top: 18px;
-      font-weight: bold;
-      font-size: 15px;
-    }
-
-    input,
-    select,
-    textarea {
-      width: 100%;
-      padding: 13px;
-      margin-top: 6px;
-      font-size: 17px;
-      border: 1px solid var(--reactiv8-border);
-      border-radius: 8px;
-      background: white;
-      color: var(--reactiv8-black);
-    }
-
-    input:focus,
-    select:focus,
-    textarea:focus {
-      outline: none;
-      border: 2px solid var(--reactiv8-light-green);
-    }
-
-    textarea {
-      min-height: 110px;
-      resize: vertical;
-    }
-
-    .required {
-      color: #b00020;
-    }
-
-    .helper {
-      font-size: 12px;
-      color: #666;
-      margin-top: 5px;
-      line-height: 1.45;
-    }
-
-    .two-col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .instruction-box {
-      margin-top: 14px;
-      padding: 15px;
-      background: #F2F7EF;
-      border-left: 5px solid var(--reactiv8-light-green);
-      border-radius: 8px;
-      color: #333;
-      font-size: 14px;
-      line-height: 1.55;
-    }
-
-    .instruction-box strong {
-      color: var(--reactiv8-dark-green);
-    }
-
-    .pitch-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-top: 12px;
-    }
-
-    .pitch-option input[type="radio"] {
-      display: none;
-    }
-
-    .pitch-card {
-      border: 2px solid var(--reactiv8-border);
-      border-radius: 12px;
-      padding: 12px;
-      background: #fff;
-      cursor: pointer;
-      text-align: center;
-      min-height: 150px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .pitch-option input[type="radio"]:checked + .pitch-card {
-      border-color: var(--reactiv8-dark-green);
-      background: #f2f7ef;
-      box-shadow: 0 0 0 3px rgba(139,195,73,0.18);
-    }
-
-    .roof-svg {
-      width: 100%;
-      height: 72px;
-      display: block;
-      margin: 0 auto 8px;
-    }
-
-    .pitch-name {
-      font-size: 14px;
-      font-weight: bold;
-      color: var(--reactiv8-dark-green);
-    }
-
-    .pitch-value {
-      font-size: 13px;
-      color: #555;
-      margin-top: 2px;
-    }
-
-    .toggle-box {
-      margin-top: 17px;
-      padding: 15px;
-      border: 2px solid var(--reactiv8-border);
-      border-radius: 10px;
-      background: #FAFBFA;
-    }
-
-    .toggle-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-    }
-
-    .toggle-row input[type="checkbox"] {
-      width: 22px;
-      height: 22px;
-      margin: 1px 0 0;
-      flex: 0 0 auto;
-      accent-color: var(--reactiv8-dark-green);
-    }
-
-    .toggle-label {
-      margin: 0;
-      font-size: 15px;
-      font-weight: bold;
-      line-height: 1.35;
-      cursor: pointer;
-    }
-
-    .toggle-description {
-      display: block;
-      font-size: 12px;
-      font-weight: normal;
-      color: #666;
-      margin-top: 5px;
-      line-height: 1.45;
-    }
-
-    .bumpout-panel {
-      display: none;
-      margin-top: 16px;
-      padding: 16px;
-      border: 2px solid var(--reactiv8-light-green);
-      background: #F8FCF5;
-      border-radius: 10px;
-    }
-
-    .bumpout-title {
-      color: var(--reactiv8-dark-green);
-      font-size: 16px;
-      font-weight: bold;
-      margin-bottom: 7px;
-    }
-
-    .mini-instructions {
-      margin-bottom: 10px;
-      font-size: 13px;
-      line-height: 1.55;
-      color: #333;
-    }
-
-    .same-pitch-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 18px;
-    }
-
-    .same-pitch-row input {
-      width: 20px;
-      height: 20px;
-      margin: 0;
-      accent-color: var(--reactiv8-dark-green);
-    }
-
-    .same-pitch-row label {
-      margin: 0;
-      cursor: pointer;
-    }
-
-    .garage-pitch-wrap {
-      display: none;
-    }
-
-    .warning-box {
-      margin-top: 14px;
-      padding: 14px;
-      background: var(--reactiv8-warning-bg);
-      border: 1px solid var(--reactiv8-warning-border);
-      border-radius: 8px;
-      color: #4b4020;
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .calculate-button,
-    .share-button {
-      width: 100%;
-      margin-top: 24px;
-      padding: 16px;
-      font-size: 19px;
-      font-weight: bold;
-      cursor: pointer;
-      border: none;
-      border-radius: 9px;
-    }
-
-    .calculate-button {
-      background: var(--reactiv8-dark-green);
-      color: white;
-    }
-
-    .share-button {
-      display: none;
-      background: var(--reactiv8-light-green);
-      color: #000;
-      margin-top: 14px;
-    }
-
-    .results {
-      margin-top: 25px;
-      padding: 22px;
-      background: #F2F7EF;
-      border: 2px solid var(--reactiv8-light-green);
-      border-radius: 12px;
-      text-align: center;
-    }
-
-    .customer-summary {
-      display: none;
-      margin-bottom: 20px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid #d9e5d4;
-      text-align: left;
-      line-height: 1.5;
-      font-size: 14px;
-    }
-
-    .customer-summary strong {
-      color: var(--reactiv8-dark-green);
-    }
-
-    .result-label {
-      color: #555;
-      font-size: 14px;
-      font-weight: bold;
-    }
-
-    .area {
-      font-size: 28px;
-      font-weight: bold;
-      color: var(--reactiv8-dark-green);
-      margin-top: 5px;
-    }
-
-    .sub-area {
-      font-size: 13px;
-      color: #666;
-      line-height: 1.65;
-      margin-top: 10px;
-    }
-
-    .divider {
-      height: 1px;
-      background: #d9e5d4;
-      margin: 18px 0;
-    }
-
-    .price {
-      font-size: 38px;
-      font-weight: bold;
-      color: var(--reactiv8-black);
-      margin-top: 5px;
-    }
-
-    .price-rate {
-      margin-top: 4px;
-      color: var(--reactiv8-medium-green);
-      font-size: 14px;
-      font-weight: bold;
-    }
-
-    .calculation-details {
-      margin-top: 18px;
-      padding-top: 14px;
-      border-top: 1px solid #d9e5d4;
-      font-size: 12px;
-      color: #666;
-      line-height: 1.6;
-    }
-
-    .reset-button {
-      width: 100%;
-      margin-top: 12px;
-      padding: 13px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      border-radius: 8px;
-      border: 2px solid var(--reactiv8-dark-green);
-      background: white;
-      color: var(--reactiv8-dark-green);
-    }
-
-    .note {
-      font-size: 12px;
-      color: #666;
-      margin-top: 22px;
-      line-height: 1.5;
-      text-align: center;
-    }
-
-    .footer {
-      background: var(--reactiv8-dark-green);
-      color: white;
-      text-align: center;
-      font-size: 12px;
-      padding: 13px;
-    }
-
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.55);
-      z-index: 9999;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .modal-overlay.show {
-      display: flex;
-    }
-
-    .share-modal {
-      width: 100%;
-      max-width: 460px;
-      background: #fff;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 18px 55px rgba(0,0,0,0.28);
-    }
-
-    .share-modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 18px 20px;
-      border-top: 6px solid var(--reactiv8-dark-green);
-      border-bottom: 1px solid #e6e6e6;
-    }
-
-    .share-modal-title {
-      font-size: 20px;
-      font-weight: bold;
-      color: var(--reactiv8-dark-green);
-    }
-
-    .modal-close {
-      width: 38px;
-      height: 38px;
-      border: none;
-      border-radius: 50%;
-      background: #f2f2f2;
-      font-size: 24px;
-      line-height: 1;
-      cursor: pointer;
-    }
-
-    .share-modal-body {
-      padding: 18px 20px 22px;
-    }
-
-    .share-modal-copy {
-      font-size: 13px;
-      color: #666;
-      line-height: 1.5;
-      margin-bottom: 14px;
-    }
-
-    .share-option {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 15px;
-      margin-top: 10px;
-      border: 1px solid var(--reactiv8-border);
-      border-radius: 10px;
-      background: white;
-      cursor: pointer;
-      text-align: left;
-    }
-
-    .share-option:hover {
-      background: #F7FAF6;
-    }
-
-    .share-option-icon {
-      width: 38px;
-      height: 38px;
-      border-radius: 9px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #F2F7EF;
-      color: var(--reactiv8-dark-green);
-      font-size: 20px;
-      flex: 0 0 auto;
-    }
-
-    .share-option-text strong {
-      display: block;
-      color: #111;
-      font-size: 15px;
-    }
-
-    .share-option-text span {
-      display: block;
-      color: #666;
-      font-size: 12px;
-      margin-top: 3px;
-      line-height: 1.35;
-    }
-
-    .toast {
-      position: fixed;
-      left: 50%;
-      bottom: 28px;
-      transform: translateX(-50%) translateY(20px);
-      background: #111;
-      color: white;
-      padding: 12px 16px;
-      border-radius: 8px;
-      font-size: 14px;
-      opacity: 0;
-      pointer-events: none;
-      transition: 0.2s ease;
-      z-index: 10000;
-      max-width: calc(100% - 32px);
-      text-align: center;
-    }
-
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    @media (max-width: 600px) {
-      body {
-        padding: 0;
-        background: white;
-      }
-
-      .calculator {
-        width: 100%;
-        border-radius: 0;
-        box-shadow: none;
-        border: none;
-      }
-
-      .content {
-        padding: 10px 20px 25px;
-      }
-
-      .logo {
-        max-width: 290px;
-      }
-
-      input,
-      select,
-      textarea {
-        font-size: 18px;
-      }
-
-      .calculate-button,
-      .share-button {
-        font-size: 20px;
-      }
-
-      .price {
-        font-size: 40px;
-      }
-
-      .pitch-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 9px;
-      }
-
-      .pitch-card {
-        min-height: 130px;
-        padding: 9px;
-      }
-
-      .roof-svg {
-        height: 62px;
-      }
-
-      .two-col {
-        grid-template-columns: 1fr;
-        gap: 0;
-      }
-
-      .share-modal {
-        max-width: 100%;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#016837">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Reactiv8 Quote">
+
+<link rel="icon" type="image/webp" href="logo.webp">
+<link rel="apple-touch-icon" href="logo.webp">
+
+<title>Reactiv8 Quick Roof Quote</title>
+
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+<style>
+*{box-sizing:border-box}
+
+:root{
+  --dg:#016837;
+  --lg:#8BC349;
+  --mg:#08663B;
+  --bg:#F5F8F4;
+  --bd:#D7DDD8;
+  --warn:#FFF8E7
+}
+
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--bg);
+  margin:0;
+  padding:24px 15px;
+  color:#000
+}
+
+button,input,select,textarea{
+  font-family:inherit
+}
+
+.hidden{
+  display:none!important
+}
+
+.calculator{
+  max-width:560px;
+  margin:auto;
+  background:#fff;
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 8px 30px rgba(0,0,0,.1);
+  border:1px solid #e5e5e5
+}
+
+.header{
+  text-align:center;
+  padding:24px 24px 18px;
+  border-top:7px solid var(--dg)
+}
+
+.logo{
+  display:block;
+  width:100%;
+  max-width:330px;
+  height:auto;
+  margin:0 auto 10px
+}
+
+.subtitle{
+  color:var(--mg);
+  font-size:18px;
+  font-weight:700;
+  margin-top:6px
+}
+
+.subtitle-small{
+  color:#666;
+  font-size:14px;
+  margin-top:5px
+}
+
+.content{
+  padding:10px 26px 28px
+}
+
+.section-title{
+  margin-top:22px;
+  margin-bottom:5px;
+  font-size:18px;
+  color:var(--dg);
+  font-weight:700;
+  border-bottom:2px solid var(--lg);
+  padding-bottom:7px
+}
+
+label{
+  display:block;
+  margin-top:18px;
+  font-weight:700;
+  font-size:15px
+}
+
+input,
+select,
+textarea{
+  width:100%;
+  padding:13px;
+  margin-top:6px;
+  font-size:17px;
+  border:1px solid var(--bd);
+  border-radius:8px;
+  background:#fff;
+  color:#000
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+  outline:none;
+  border:2px solid var(--lg)
+}
+
+textarea{
+  min-height:110px;
+  resize:vertical
+}
+
+.required{
+  color:#b00020
+}
+
+.helper{
+  font-size:12px;
+  color:#666;
+  margin-top:5px;
+  line-height:1.45
+}
+
+.two-col{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px
+}
+
+.instruction{
+  margin-top:14px;
+  padding:15px;
+  background:#F2F7EF;
+  border-left:5px solid var(--lg);
+  border-radius:8px;
+  color:#333;
+  font-size:14px;
+  line-height:1.55
+}
+
+.instruction strong{
+  color:var(--dg)
+}
+
+.pitch-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  margin-top:12px
+}
+
+.pitch-option input{
+  display:none
+}
+
+.pitch-card{
+  border:2px solid var(--bd);
+  border-radius:12px;
+  padding:12px;
+  background:#fff;
+  cursor:pointer;
+  text-align:center;
+  min-height:145px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between
+}
+
+.pitch-option input:checked + .pitch-card{
+  border-color:var(--dg);
+  background:#f2f7ef;
+  box-shadow:0 0 0 3px rgba(139,195,73,.18)
+}
+
+.roof-svg{
+  width:100%;
+  height:68px;
+  margin:0 auto 8px
+}
+
+.pitch-name{
+  font-size:14px;
+  font-weight:700;
+  color:var(--dg)
+}
+
+.pitch-value{
+  font-size:13px;
+  color:#555;
+  margin-top:2px
+}
+
+.toggle-box{
+  margin-top:17px;
+  padding:15px;
+  border:2px solid var(--bd);
+  border-radius:10px;
+  background:#FAFBFA
+}
+
+.toggle-row{
+  display:flex;
+  align-items:flex-start;
+  gap:12px
+}
+
+.toggle-row input[type=checkbox]{
+  width:22px;
+  height:22px;
+  margin:1px 0 0;
+  flex:0 0 auto;
+  accent-color:var(--dg)
+}
+
+.toggle-label{
+  margin:0;
+  font-size:15px;
+  font-weight:700;
+  line-height:1.35;
+  cursor:pointer
+}
+
+.toggle-description{
+  display:block;
+  font-size:12px;
+  font-weight:400;
+  color:#666;
+  margin-top:5px;
+  line-height:1.45
+}
+
+.panel{
+  display:none;
+  margin-top:16px;
+  padding:16px;
+  border:2px solid var(--lg);
+  background:#F8FCF5;
+  border-radius:10px
+}
+
+.panel-title{
+  color:var(--dg);
+  font-size:16px;
+  font-weight:700;
+  margin-bottom:7px
+}
+
+.mini{
+  font-size:13px;
+  line-height:1.55;
+  color:#333
+}
+
+.check-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:18px
+}
+
+.check-row input{
+  width:20px;
+  height:20px;
+  margin:0;
+  accent-color:var(--dg)
+}
+
+.check-row label{
+  margin:0;
+  cursor:pointer
+}
+
+.warning{
+  margin-top:14px;
+  padding:14px;
+  background:var(--warn);
+  border:1px solid #E2B93B;
+  border-radius:8px;
+  color:#4b4020;
+  font-size:13px;
+  line-height:1.5
+}
+
+.calculate,
+.share-main{
+  width:100%;
+  margin-top:24px;
+  padding:16px;
+  font-size:19px;
+  font-weight:700;
+  cursor:pointer;
+  border:0;
+  border-radius:9px
+}
+
+.calculate{
+  background:var(--dg);
+  color:#fff
+}
+
+.share-main{
+  display:none;
+  background:var(--lg);
+  color:#000;
+  margin-top:14px
+}
+
+.results{
+  margin-top:25px;
+  padding:22px;
+  background:#F2F7EF;
+  border:2px solid var(--lg);
+  border-radius:12px;
+  text-align:center
+}
+
+.customer-summary{
+  display:none;
+  margin-bottom:20px;
+  padding-bottom:16px;
+  border-bottom:1px solid #d9e5d4;
+  text-align:left;
+  line-height:1.5;
+  font-size:14px
+}
+
+.customer-summary strong{
+  color:var(--dg)
+}
+
+.result-label{
+  color:#555;
+  font-size:14px;
+  font-weight:700
+}
+
+.area{
+  font-size:28px;
+  font-weight:700;
+  color:var(--dg);
+  margin-top:5px
+}
+
+.sub-area{
+  font-size:13px;
+  color:#666;
+  line-height:1.65;
+  margin-top:10px
+}
+
+.divider{
+  height:1px;
+  background:#d9e5d4;
+  margin:18px 0
+}
+
+.price{
+  font-size:38px;
+  font-weight:700;
+  margin-top:5px
+}
+
+.price-rate{
+  margin-top:4px;
+  color:var(--mg);
+  font-size:14px;
+  font-weight:700
+}
+
+.details{
+  margin-top:18px;
+  padding-top:14px;
+  border-top:1px solid #d9e5d4;
+  font-size:12px;
+  color:#666;
+  line-height:1.6
+}
+
+.reset{
+  width:100%;
+  margin-top:12px;
+  padding:13px;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+  border-radius:8px;
+  border:2px solid var(--dg);
+  background:#fff;
+  color:var(--dg)
+}
+
+.note{
+  font-size:12px;
+  color:#666;
+  margin-top:22px;
+  line-height:1.5;
+  text-align:center
+}
+
+.footer,
+.public-footer{
+  background:var(--dg);
+  color:#fff;
+  text-align:center;
+  font-size:12px;
+  padding:13px
+}
+
+.modal-overlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.55);
+  z-index:9999;
+  align-items:center;
+  justify-content:center;
+  padding:20px
+}
+
+.modal-overlay.show{
+  display:flex
+}
+
+.share-modal{
+  width:100%;
+  max-width:480px;
+  background:#fff;
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 18px 55px rgba(0,0,0,.28);
+  max-height:92vh;
+  overflow-y:auto
+}
+
+.share-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:18px 20px;
+  border-top:6px solid var(--dg);
+  border-bottom:1px solid #e6e6e6
+}
+
+.share-title{
+  font-size:20px;
+  font-weight:700;
+  color:var(--dg)
+}
+
+.close{
+  width:38px;
+  height:38px;
+  border:0;
+  border-radius:50%;
+  background:#f2f2f2;
+  font-size:24px;
+  cursor:pointer
+}
+
+.share-body{
+  padding:18px 20px 22px
+}
+
+.share-copy{
+  font-size:13px;
+  color:#666;
+  line-height:1.5;
+  margin-bottom:14px
+}
+
+.share-link-box{
+  padding:12px;
+  background:#F7FAF6;
+  border:1px solid var(--bd);
+  border-radius:10px;
+  margin-bottom:12px
+}
+
+.share-link-label{
+  font-size:11px;
+  font-weight:700;
+  color:var(--dg);
+  margin-bottom:5px
+}
+
+.share-link-input{
+  font-size:12px;
+  margin:0;
+  padding:10px
+}
+
+.share-option{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:14px 15px;
+  margin-top:10px;
+  border:1px solid var(--bd);
+  border-radius:10px;
+  background:#fff;
+  cursor:pointer;
+  text-align:left;
+  text-decoration:none;
+  color:#000
+}
+
+.share-option:hover{
+  background:#F7FAF6
+}
+
+.share-icon{
+  width:40px;
+  height:40px;
+  border-radius:9px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#F2F7EF;
+  color:var(--dg);
+  font-size:16px;
+  font-weight:700;
+  flex:0 0 auto
+}
+
+.share-text strong{
+  display:block;
+  font-size:15px
+}
+
+.share-text span{
+  display:block;
+  color:#666;
+  font-size:12px;
+  margin-top:3px;
+  line-height:1.35
+}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:28px;
+  transform:translateX(-50%) translateY(20px);
+  background:#111;
+  color:#fff;
+  padding:12px 16px;
+  border-radius:8px;
+  font-size:14px;
+  opacity:0;
+  pointer-events:none;
+  transition:.2s;
+  z-index:10000
+}
+
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0)
+}
+
+.public-shell{
+  max-width:760px;
+  margin:20px auto;
+  background:#fff;
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 8px 30px rgba(0,0,0,.10);
+  border-top:8px solid var(--dg)
+}
+
+.public-inner{
+  padding:28px 42px 34px
+}
+
+.public-logo{
+  display:block;
+  width:320px;
+  max-width:88%;
+  margin:0 auto 12px
+}
+
+.public-title{
+  text-align:center;
+  color:var(--mg);
+  font-size:27px;
+  font-weight:700;
+  margin:0 0 28px
+}
+
+.public-detail-label{
+  color:var(--dg);
+  font-size:12px;
+  font-weight:700;
+  text-transform:uppercase;
+  margin-top:16px
+}
+
+.public-detail-value{
+  font-size:18px;
+  margin-top:4px;
+  line-height:1.4
+}
+
+.public-quote-box{
+  margin-top:28px;
+  background:#F2F7EF;
+  border:3px solid var(--lg);
+  border-radius:16px;
+  padding:26px;
+  text-align:center
+}
+
+.public-area{
+  font-size:34px;
+  font-weight:700;
+  color:var(--dg);
+  margin:6px 0 18px
+}
+
+.public-price{
+  font-size:48px;
+  font-weight:700;
+  margin-top:8px
+}
+
+.benefits{
+  margin-top:28px
+}
+
+.benefits-title{
+  text-align:center;
+  color:var(--dg);
+  font-size:22px;
+  font-weight:700;
+  margin-bottom:14px
+}
+
+.benefit{
+  display:grid;
+  grid-template-columns:30px 1fr;
+  gap:10px;
+  margin-top:12px
+}
+
+.benefit-num{
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  background:var(--lg);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:13px;
+  font-weight:700
+}
+
+.benefit strong{
+  display:block;
+  color:var(--dg);
+  font-size:14px
+}
+
+.benefit span{
+  display:block;
+  color:#444;
+  font-size:13px;
+  line-height:1.42;
+  margin-top:2px
+}
+
+.public-tagline{
+  text-align:center;
+  color:var(--mg);
+  font-weight:700;
+  font-size:20px;
+  margin-top:28px
+}
+
+.public-disclaimer{
+  color:#666;
+  text-align:center;
+  font-size:12px;
+  line-height:1.5;
+  margin:18px auto 0;
+  max-width:620px
+}
+
+.public-actions{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+  margin-top:24px
+}
+
+.public-actions button{
+  border-radius:9px;
+  padding:12px 16px;
+  font-weight:700;
+  cursor:pointer
+}
+
+.primary{
+  background:var(--dg);
+  color:#fff;
+  border:0
+}
+
+.secondary{
+  background:#fff;
+  color:var(--dg);
+  border:2px solid var(--dg)
+}
+
+@media(max-width:600px){
+  body{
+    padding:0;
+    background:#fff
+  }
+
+  .calculator,
+  .public-shell{
+    width:100%;
+    border-radius:0;
+    box-shadow:none;
+    border-left:0;
+    border-right:0
+  }
+
+  .content{
+    padding:10px 20px 25px
+  }
+
+  .logo{
+    max-width:290px
+  }
+
+  .two-col{
+    grid-template-columns:1fr;
+    gap:0
+  }
+
+  .pitch-grid{
+    gap:9px
+  }
+
+  .pitch-card{
+    min-height:130px;
+    padding:9px
+  }
+
+  .roof-svg{
+    height:62px
+  }
+
+  .calculate,
+  .share-main{
+    font-size:20px
+  }
+
+  .price{
+    font-size:40px
+  }
+
+  .public-inner{
+    padding:24px 20px 30px
+  }
+
+  .public-price{
+    font-size:42px
+  }
+
+  .public-title{
+    font-size:24px
+  }
+
+  .share-modal{
+    max-width:100%
+  }
+}
+</style>
 </head>
 
 <body>
 
-<div class="calculator">
+<div id="calculatorView" class="calculator">
 
   <div class="header">
-    <img
-      src="logo.webp"
-      alt="Reactiv8 Shingle Rejuvenation"
-      class="logo"
-    >
-
-    <div class="subtitle">
-      Quick Roof Quote Calculator
-    </div>
-
-    <div class="subtitle-small">
-      Fast approximate roof measurement & pricing
-    </div>
+    <img src="logo.webp" alt="Reactiv8 Shingle Rejuvenation" class="logo">
+    <div class="subtitle">Quick Roof Quote Calculator</div>
+    <div class="subtitle-small">Fast approximate roof measurement & pricing</div>
   </div>
-
 
   <div class="content">
 
-    <div class="section-title">
-      Customer Information
-    </div>
+    <div class="section-title">Customer Information</div>
 
-    <label for="customerName">
-      Homeowner Name
-    </label>
-
+    <label for="customerName">Homeowner Name</label>
     <input
-      type="text"
       id="customerName"
+      type="text"
       placeholder="Example: John Smith"
       autocomplete="name"
     >
 
-
-    <label for="phone">
-      Phone Number
-    </label>
-
+    <label for="phone">Phone Number</label>
     <input
-      type="tel"
       id="phone"
+      type="tel"
       placeholder="Example: 717-555-1234"
       autocomplete="tel"
     >
 
-
-    <label for="email">
-      Email
-    </label>
-
+    <label for="email">Email</label>
     <input
-      type="email"
       id="email"
+      type="email"
       placeholder="Example: john@email.com"
       autocomplete="email"
     >
 
-
-
-    <div class="section-title">
-      Property Address
-    </div>
+    <div class="section-title">Property Address</div>
 
     <div class="helper">
-      Enter the full property address so every quote is tied to the correct home.
+      Enter the complete property address so every quote is tied to the correct home.
     </div>
 
-
     <label for="streetAddress">
-      Street Address
-      <span class="required">*</span>
+      Street Address <span class="required">*</span>
     </label>
 
     <input
-      type="text"
       id="streetAddress"
+      type="text"
       placeholder="Example: 123 Main Street"
       autocomplete="address-line1"
     >
 
-
-    <label for="unit">
-      Unit / Suite
-    </label>
+    <label for="unit">Unit / Suite</label>
 
     <input
-      type="text"
       id="unit"
+      type="text"
       placeholder="Optional"
       autocomplete="address-line2"
     >
-
 
     <div class="two-col">
 
       <div>
         <label for="city">
-          City
-          <span class="required">*</span>
+          City <span class="required">*</span>
         </label>
 
         <input
-          type="text"
           id="city"
-          placeholder="Example: Shippensburg"
+          type="text"
           autocomplete="address-level2"
         >
       </div>
 
-
       <div>
         <label for="region">
-          State / Province
-          <span class="required">*</span>
+          State / Province <span class="required">*</span>
         </label>
 
         <input
-          type="text"
           id="region"
-          placeholder="Example: PA or ON"
+          type="text"
+          placeholder="PA or ON"
           autocomplete="address-level1"
         >
       </div>
 
     </div>
 
-
     <div class="two-col">
 
       <div>
         <label for="postalCode">
-          ZIP / Postal Code
-          <span class="required">*</span>
+          ZIP / Postal Code <span class="required">*</span>
         </label>
 
         <input
-          type="text"
           id="postalCode"
-          placeholder="Example: 17257"
+          type="text"
           autocomplete="postal-code"
         >
       </div>
 
-
       <div>
         <label for="country">
-          Country
-          <span class="required">*</span>
+          Country <span class="required">*</span>
         </label>
 
-        <select
-          id="country"
-          autocomplete="country"
-        >
-          <option value="United States" selected>
-            United States
-          </option>
-
-          <option value="Canada">
-            Canada
-          </option>
+        <select id="country">
+          <option value="United States">United States</option>
+          <option value="Canada">Canada</option>
         </select>
       </div>
 
     </div>
 
+    <div class="section-title">Roof Measurement</div>
 
-
-    <div class="section-title">
-      Roof Measurement
-    </div>
-
-
-    <div class="instruction-box">
-
+    <div class="instruction">
       <strong>Simple measuring rule:</strong>
-
-      Measure the main rectangular footprint of the house
-      wall-to-wall at ground level.
+      Measure the main rectangular footprint wall-to-wall at ground level.
 
       <br><br>
 
-      If part of the garage is blended into that main rectangle,
-      it is already included here.
+      If part of the garage is blended into the main rectangle,
+      it is already included.
 
-      <strong>
-        Do not add that part of the garage again.
-      </strong>
-
+      <strong>Do not add that part again.</strong>
     </div>
 
-
-    <label for="length">
-      Main House Length (feet)
-    </label>
+    <label for="length">Main House Length (feet)</label>
 
     <input
-      type="number"
       id="length"
-      placeholder="Example: 50"
+      type="number"
       min="1"
       step="0.5"
+      placeholder="Example: 50"
     >
 
-
-    <label for="width">
-      Main House Width (feet)
-    </label>
+    <label for="width">Main House Width (feet)</label>
 
     <input
-      type="number"
       id="width"
-      placeholder="Example: 30"
+      type="number"
       min="1"
       step="0.5"
+      placeholder="Example: 30"
     >
 
-
-    <label for="overhang">
-      Approximate Roof Overhang
-    </label>
+    <label for="overhang">Approximate Roof Overhang</label>
 
     <select id="overhang">
-
-      <option value="0">
-        None
-      </option>
-
-      <option value="0.5">
-        6 inches
-      </option>
-
-      <option value="1" selected>
-        1 foot
-      </option>
-
-      <option value="1.5">
-        1.5 feet
-      </option>
-
-      <option value="2">
-        2 feet
-      </option>
-
+      <option value="0">None</option>
+      <option value="0.5">6 inches</option>
+      <option value="1" selected>1 foot</option>
+      <option value="1.5">1.5 feet</option>
+      <option value="2">2 feet</option>
     </select>
 
+    <label>Approximate Main Roof Pitch</label>
 
-    <label>
-      Approximate Main Roof Pitch
-    </label>
-
-
-    <div class="pitch-grid">
-
-      <label class="pitch-option">
-        <input
-          type="radio"
-          name="pitch"
-          value="3"
-        >
-
-        <div class="pitch-card">
-
-          <svg
-            class="roof-svg"
-            viewBox="0 0 140 70"
-          >
-            <polyline
-              points="15,52 70,36 125,52"
-              fill="none"
-              stroke="#016837"
-              stroke-width="6"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-
-            <line
-              x1="20"
-              y1="58"
-              x2="120"
-              y2="58"
-              stroke="#8BC349"
-              stroke-width="4"
-            />
-          </svg>
-
-          <div class="pitch-name">
-            Low
-          </div>
-
-          <div class="pitch-value">
-            3/12
-          </div>
-
-        </div>
-      </label>
-
-
-
-      <label class="pitch-option">
-        <input
-          type="radio"
-          name="pitch"
-          value="4"
-          checked
-        >
-
-        <div class="pitch-card">
-
-          <svg
-            class="roof-svg"
-            viewBox="0 0 140 70"
-          >
-            <polyline
-              points="15,54 70,30 125,54"
-              fill="none"
-              stroke="#016837"
-              stroke-width="6"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-
-            <line
-              x1="20"
-              y1="58"
-              x2="120"
-              y2="58"
-              stroke="#8BC349"
-              stroke-width="4"
-            />
-          </svg>
-
-          <div class="pitch-name">
-            Typical
-          </div>
-
-          <div class="pitch-value">
-            4/12
-          </div>
-
-        </div>
-      </label>
-
-
-
-      <label class="pitch-option">
-        <input
-          type="radio"
-          name="pitch"
-          value="6"
-        >
-
-        <div class="pitch-card">
-
-          <svg
-            class="roof-svg"
-            viewBox="0 0 140 70"
-          >
-            <polyline
-              points="15,56 70,23 125,56"
-              fill="none"
-              stroke="#016837"
-              stroke-width="6"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-
-            <line
-              x1="20"
-              y1="60"
-              x2="120"
-              y2="60"
-              stroke="#8BC349"
-              stroke-width="4"
-            />
-          </svg>
-
-          <div class="pitch-name">
-            Medium
-          </div>
-
-          <div class="pitch-value">
-            6/12
-          </div>
-
-        </div>
-      </label>
-
-
-
-      <label class="pitch-option">
-        <input
-          type="radio"
-          name="pitch"
-          value="8"
-        >
-
-        <div class="pitch-card">
-
-          <svg
-            class="roof-svg"
-            viewBox="0 0 140 70"
-          >
-            <polyline
-              points="15,58 70,15 125,58"
-              fill="none"
-              stroke="#016837"
-              stroke-width="6"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-
-            <line
-              x1="20"
-              y1="62"
-              x2="120"
-              y2="62"
-              stroke="#8BC349"
-              stroke-width="4"
-            />
-          </svg>
-
-          <div class="pitch-name">
-            Steep
-          </div>
-
-          <div class="pitch-value">
-            8/12
-          </div>
-
-        </div>
-      </label>
-
-
-
-      <label class="pitch-option">
-        <input
-          type="radio"
-          name="pitch"
-          value="10"
-        >
-
-        <div class="pitch-card">
-
-          <svg
-            class="roof-svg"
-            viewBox="0 0 140 70"
-          >
-            <polyline
-              points="15,60 70,10 125,60"
-              fill="none"
-              stroke="#016837"
-              stroke-width="6"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-
-            <line
-              x1="20"
-              y1="64"
-              x2="120"
-              y2="64"
-              stroke="#8BC349"
-              stroke-width="4"
-            />
-          </svg>
-
-          <div class="pitch-name">
-            Very Steep
-          </div>
-
-          <div class="pitch-value">
-            10/12
-          </div>
-
-        </div>
-      </label>
-
-
-
-      <label class="pitch-option">
-        <input
-          type="radio"
-          name="pitch"
-          value="12"
-        >
-
-        <div class="pitch-card">
-
-          <svg
-            class="roof-svg"
-            viewBox="0 0 140 70"
-          >
-            <polyline
-              points="15,60 70,5 125,60"
-              fill="none"
-              stroke="#016837"
-              stroke-width="6"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-
-            <line
-              x1="20"
-              y1="64"
-              x2="120"
-              y2="64"
-              stroke="#8BC349"
-              stroke-width="4"
-            />
-          </svg>
-
-          <div class="pitch-name">
-            Extreme
-          </div>
-
-          <div class="pitch-value">
-            12/12
-          </div>
-
-        </div>
-      </label>
-
-    </div>
-
-
-
-    <div class="section-title">
-      Garage / Addition
-    </div>
-
+    <div
+      class="pitch-grid"
+      id="pitchGrid"
+    ></div>
 
     <div class="toggle-box">
 
       <div class="toggle-row">
 
         <input
+          id="hasMixedPitch"
           type="checkbox"
-          id="hasBumpout"
-          onchange="toggleBumpout()"
+          onchange="toggleMixedPitch()"
         >
 
         <label
-          for="hasBumpout"
           class="toggle-label"
+          for="hasMixedPitch"
         >
-
-          Does a garage or addition stick out beyond the
-          main house footprint?
+          Does the main roof have a clearly different second pitch?
 
           <span class="toggle-description">
-            Leave this OFF if the garage is completely contained
-            within the main house measurement.
+            Leave this OFF for roofs that are essentially one pitch.
           </span>
-
         </label>
 
       </div>
 
     </div>
 
-
-
     <div
-      class="bumpout-panel"
-      id="bumpoutPanel"
+      id="mixedPitchPanel"
+      class="panel"
     >
 
+      <div class="panel-title">
+        Mixed-Pitch Roof
+      </div>
 
-      <div class="bumpout-title">
+      <div class="mini">
+        Estimate how much of the main house roof uses the second pitch.
+        If the roof has more than two major pitches or is difficult to estimate,
+        send it to Reactiv8 for review.
+      </div>
+
+      <label for="secondaryPitch">
+        Secondary Roof Pitch
+      </label>
+
+      <select id="secondaryPitch">
+        <option value="3">Low — 3/12</option>
+        <option value="4">Typical — 4/12</option>
+        <option value="6" selected>Medium — 6/12</option>
+        <option value="8">Steep — 8/12</option>
+        <option value="10">Very Steep — 10/12</option>
+        <option value="12">Extreme — 12/12</option>
+      </select>
+
+      <label for="secondaryShare">
+        Approximate Portion Using Secondary Pitch
+      </label>
+
+      <select id="secondaryShare">
+        <option value="0.25">
+          Small section — about 25%
+        </option>
+
+        <option value="0.50">
+          About half — about 50%
+        </option>
+
+        <option value="0.75">
+          Most of roof — about 75%
+        </option>
+      </select>
+
+    </div>
+
+    <div class="section-title">
+      Garage / Addition
+    </div>
+
+    <div class="toggle-box">
+
+      <div class="toggle-row">
+
+        <input
+          id="hasBumpout"
+          type="checkbox"
+          onchange="toggleBumpout()"
+        >
+
+        <label
+          class="toggle-label"
+          for="hasBumpout"
+        >
+          Does a garage or addition stick out beyond the main house footprint?
+
+          <span class="toggle-description">
+            Leave this OFF if the garage is completely contained within the main house measurement.
+          </span>
+        </label>
+
+      </div>
+
+    </div>
+
+    <div
+      id="bumpoutPanel"
+      class="panel"
+    >
+
+      <div class="panel-title">
         Measure Only the Part That Sticks Out
       </div>
 
-
-      <div class="mini-instructions">
-
-        If part of the garage is blended into the main house
-        and part sticks out,
-
-        <strong>
-          do not measure the whole garage.
-        </strong>
+      <div class="mini">
+        If part of the garage is blended into the main house and part sticks out,
+        <strong>do not measure the whole garage.</strong>
 
         <br><br>
 
-        Enter only:
-
-        <br>
-
-        <strong>1.</strong>
-        The width of the garage/addition where it projects
-        from the house.
-
-        <br>
-
-        <strong>2.</strong>
-        How far that section extends past the main house wall.
-
-        <br><br>
-
-        Example:
-
-        If a 20-foot-wide garage sticks 10 feet past the
-        front wall, enter
-
-        <strong>20 ft wide</strong>
-
-        and
-
-        <strong>10 ft projection</strong>.
-
+        Enter only the width of the projecting section and how far it extends past the main house wall.
       </div>
-
 
       <label for="bumpoutWidth">
         Garage / Addition Width (feet)
       </label>
 
       <input
-        type="number"
         id="bumpoutWidth"
-        placeholder="Example: 20"
+        type="number"
         min="1"
         step="0.5"
+        placeholder="Example: 20"
       >
-
 
       <label for="bumpoutDepth">
         How Far Does It Stick Out? (feet)
       </label>
 
       <input
-        type="number"
         id="bumpoutDepth"
-        placeholder="Example: 10"
+        type="number"
         min="1"
         step="0.5"
+        placeholder="Example: 10"
       >
-
 
       <label for="bumpoutOverhang">
         Garage / Addition Roof Overhang
       </label>
 
       <select id="bumpoutOverhang">
-
         <option value="same" selected>
           Same as main roof
         </option>
@@ -1299,15 +1139,13 @@
         <option value="2">
           2 feet
         </option>
-
       </select>
 
-
-      <div class="same-pitch-row">
+      <div class="check-row">
 
         <input
-          type="checkbox"
           id="sameGaragePitch"
+          type="checkbox"
           checked
           onchange="toggleGaragePitch()"
         >
@@ -1318,10 +1156,9 @@
 
       </div>
 
-
       <div
-        class="garage-pitch-wrap"
         id="garagePitchWrap"
+        class="hidden"
       >
 
         <label for="garagePitch">
@@ -1329,200 +1166,141 @@
         </label>
 
         <select id="garagePitch">
-
-          <option value="3">
-            Low — 3/12
-          </option>
-
-          <option value="4" selected>
-            Typical — 4/12
-          </option>
-
-          <option value="6">
-            Medium — 6/12
-          </option>
-
-          <option value="8">
-            Steep — 8/12
-          </option>
-
-          <option value="10">
-            Very Steep — 10/12
-          </option>
-
-          <option value="12">
-            Extreme — 12/12
-          </option>
-
+          <option value="3">Low — 3/12</option>
+          <option value="4" selected>Typical — 4/12</option>
+          <option value="6">Medium — 6/12</option>
+          <option value="8">Steep — 8/12</option>
+          <option value="10">Very Steep — 10/12</option>
+          <option value="12">Extreme — 12/12</option>
         </select>
 
       </div>
 
-
-      <div class="warning-box">
-
+      <div class="warning">
         <strong>Too complicated?</strong>
 
-        If the garage/addition projects in more than one
-        direction, has several roof sections, multiple pitches,
-        or you are not confident in the measurement, do not guess.
+        If the garage/addition projects in more than one direction,
+        has several roof sections, multiple pitches,
+        or you are not confident in the measurement,
+        do not guess.
 
         Send the property to Reactiv8 for review.
-
       </div>
 
     </div>
 
-
-
     <div class="section-title">
       Pricing
     </div>
-
 
     <label for="pricePerSqFt">
       Price Per Square Foot ($)
     </label>
 
     <input
-      type="number"
       id="pricePerSqFt"
+      type="number"
       value="1.05"
       min="0"
       step="0.01"
     >
 
-
     <button
+      class="calculate"
       type="button"
-      class="calculate-button"
       onclick="calculateQuote()"
     >
       CALCULATE QUOTE
     </button>
 
-
-
     <div class="results">
 
       <div
-        class="customer-summary"
         id="customerSummary"
-      >
-      </div>
-
+        class="customer-summary"
+      ></div>
 
       <div class="result-label">
         ESTIMATED TOTAL ROOF SIZE
       </div>
 
-
       <div
-        class="area"
         id="roofArea"
+        class="area"
       >
         —
       </div>
 
-
       <div
-        class="sub-area"
         id="areaBreakdown"
-      >
-      </div>
+        class="sub-area"
+      ></div>
 
-
-      <div class="divider">
-      </div>
-
+      <div class="divider"></div>
 
       <div class="result-label">
         ESTIMATED REACTIV8 PRICE
       </div>
 
-
       <div
-        class="price"
         id="quotePrice"
+        class="price"
       >
         —
       </div>
 
-
       <div
-        class="price-rate"
         id="priceRate"
-      >
-      </div>
-
+        class="price-rate"
+      ></div>
 
       <div
-        class="calculation-details"
         id="calculationDetails"
-      >
-      </div>
+        class="details"
+      ></div>
 
     </div>
 
-
-
     <button
-      type="button"
-      class="share-button"
       id="shareButton"
+      class="share-main"
+      type="button"
       onclick="openShareModal()"
     >
       SHARE QUOTE
     </button>
 
-
-
     <div class="section-title">
       Customer Notes
     </div>
-
 
     <label for="notes">
       Internal Notes
     </label>
 
-
     <textarea
       id="notes"
-      placeholder="Example: Roof approximately 12–15 years old. Homeowner interested in treatment. Follow up Tuesday after 5 PM."
+      placeholder="Example: Roof approximately 12–15 years old. Homeowner interested. Follow up Tuesday after 5 PM."
     ></textarea>
 
-
     <div class="helper">
-      These notes are for Reactiv8 use and are not included
-      in the homeowner's shared quote.
+      These notes are internal and are not included in customer-facing outputs.
     </div>
 
-
-
     <button
+      class="reset"
       type="button"
-      class="reset-button"
       onclick="resetCalculator()"
     >
       Clear Calculator
     </button>
 
-
-
     <div class="note">
-
-      This calculator provides an approximate roof measurement
-      for straightforward residential roofs.
-
-      Complex roofs, multiple additions, dormers, unusual roof
-      shapes or multiple roof pitches should be reviewed by
-      Reactiv8 before final pricing.
-
+      This calculator provides an approximate field measurement for straightforward residential roofs.
+      Complex roofs should be reviewed by Reactiv8 before final pricing.
     </div>
 
   </div>
-
 
   <div class="footer">
     Reactiv8 • Roof Maintenance & Shingle Rejuvenation
@@ -1531,178 +1309,275 @@
 </div>
 
 
-
-<!-- SHARE QUOTE MODAL -->
-
 <div
-  class="modal-overlay"
-  id="shareModal"
-  onclick="handleOverlayClick(event)"
+  id="publicQuoteView"
+  class="public-shell"
+  hidden
 >
 
-  <div
-    class="share-modal"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="shareModalTitle"
-  >
+  <div class="public-inner">
 
-    <div class="share-modal-header">
+    <img
+      id="publicLogo"
+      class="public-logo"
+      alt="Reactiv8"
+    >
+
+    <div class="public-title">
+      ROOF MAINTENANCE QUOTE
+    </div>
+
+    <div
+      id="publicHomeownerBlock"
+      hidden
+    >
+
+      <div class="public-detail-label">
+        Homeowner
+      </div>
 
       <div
-        class="share-modal-title"
-        id="shareModalTitle"
+        id="publicHomeowner"
+        class="public-detail-value"
+      ></div>
+
+    </div>
+
+    <div class="public-detail-label">
+      Property
+    </div>
+
+    <div
+      id="publicAddress"
+      class="public-detail-value"
+    ></div>
+
+    <div class="public-quote-box">
+
+      <div class="result-label">
+        ESTIMATED ROOF SIZE
+      </div>
+
+      <div
+        id="publicRoofArea"
+        class="public-area"
+      ></div>
+
+      <div class="divider"></div>
+
+      <div class="result-label">
+        ESTIMATED REACTIV8 TREATMENT
+      </div>
+
+      <div
+        id="publicPrice"
+        class="public-price"
+      ></div>
+
+    </div>
+
+    <div class="benefits">
+
+      <div class="benefits-title">
+        WHY REJUVENATE YOUR ROOF?
+      </div>
+
+      <div id="publicBenefits"></div>
+
+    </div>
+
+    <div class="public-tagline">
+      Maintain today. Replace when you actually need to.
+    </div>
+
+    <div class="public-disclaimer">
+      This is an approximate field quote based on the measurements available at the time.
+      Final treatment suitability and scope are subject to roof condition and verification.
+    </div>
+
+    <div class="public-actions">
+
+      <button
+        class="primary"
+        type="button"
+        onclick="downloadPDF()"
       >
+        DOWNLOAD PDF
+      </button>
+
+      <button
+        class="secondary"
+        type="button"
+        onclick="copyCurrentPageLink()"
+      >
+        COPY LINK
+      </button>
+
+      <button
+        class="secondary"
+        type="button"
+        onclick="printQuote()"
+      >
+        PRINT QUOTE
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="public-footer">
+    Reactiv8 • Roof Maintenance & Shingle Rejuvenation
+  </div>
+
+</div>
+
+
+<div
+  id="shareModal"
+  class="modal-overlay"
+  onclick="overlayClick(event)"
+>
+
+  <div class="share-modal">
+
+    <div class="share-head">
+
+      <div class="share-title">
         Share Quote
       </div>
 
       <button
+        class="close"
         type="button"
-        class="modal-close"
         onclick="closeShareModal()"
-        aria-label="Close"
       >
         ×
       </button>
 
     </div>
 
+    <div class="share-body">
 
-    <div class="share-modal-body">
+      <div class="share-copy">
+        Choose how you want to share or save the homeowner's branded Reactiv8 quote.
+        Internal measurements, pricing rate, pitch details, phone, email and notes are not included.
+      </div>
 
-      <div class="share-modal-copy">
+      <div class="share-link-box">
 
-        Choose how you want to send or save the homeowner's
-        Reactiv8 quote.
+        <div class="share-link-label">
+          HOMEOWNER QUOTE LINK
+        </div>
 
-        Internal measurements, pricing rate and notes
-        are not included.
+        <input
+          id="shareLinkPreview"
+          class="share-link-input"
+          type="text"
+          readonly
+        >
 
       </div>
 
-
       <button
-        type="button"
         class="share-option"
-        onclick="shareToPhone()"
+        type="button"
+        onclick="copyQuoteLink()"
       >
 
-        <div class="share-option-icon">
-          ↗
+        <div class="share-icon">
+          LINK
         </div>
 
-        <div class="share-option-text">
-
-          <strong>
-            Share Quote
-          </strong>
-
-          <span>
-            Send the branded quote through Messages,
-            Gmail, WhatsApp and more.
-          </span>
-
+        <div class="share-text">
+          <strong>Copy Quote Link</strong>
+          <span>Copies the branded homeowner quote link.</span>
         </div>
 
       </button>
 
-
-      <button
-        type="button"
+      <a
+        id="openQuoteLinkButton"
         class="share-option"
-        onclick="copyQuote()"
+        href="#"
+        target="_blank"
+        rel="noopener"
       >
 
-        <div class="share-option-icon">
-          ⧉
+        <div class="share-icon">
+          OPEN
         </div>
 
-        <div class="share-option-text">
-
-          <strong>
-            Copy Quote
-          </strong>
-
-          <span>
-            Copy a clean text version to paste into
-            a message or email.
-          </span>
-
+        <div class="share-text">
+          <strong>Open Quote Page</strong>
+          <span>Preview the branded homeowner quote page.</span>
         </div>
 
-      </button>
+      </a>
 
+      <a
+        id="emailQuoteLink"
+        class="share-option"
+        href="#"
+      >
+
+        <div class="share-icon">
+          MAIL
+        </div>
+
+        <div class="share-text">
+          <strong>Email Quote</strong>
+          <span>Opens your default email program with the quote link included.</span>
+        </div>
+
+      </a>
 
       <button
-        type="button"
         class="share-option"
+        type="button"
         onclick="downloadPDF()"
       >
 
-        <div class="share-option-icon">
+        <div class="share-icon">
           PDF
         </div>
 
-        <div class="share-option-text">
-
-          <strong>
-            Download PDF
-          </strong>
-
-          <span>
-            Create a branded Reactiv8 PDF for the homeowner.
-          </span>
-
+        <div class="share-text">
+          <strong>Download PDF</strong>
+          <span>Downloads the branded homeowner quote as a PDF.</span>
         </div>
 
       </button>
 
-
       <button
-        type="button"
         class="share-option"
+        type="button"
         onclick="saveQuoteImage()"
       >
 
-        <div class="share-option-icon">
-          ▣
+        <div class="share-icon">
+          PNG
         </div>
 
-        <div class="share-option-text">
-
-          <strong>
-            Save Quote Image
-          </strong>
-
-          <span>
-            Save the branded quote as a PNG image.
-          </span>
-
+        <div class="share-text">
+          <strong>Save Quote Image</strong>
+          <span>Saves the branded homeowner quote as a PNG.</span>
         </div>
 
       </button>
 
-
       <button
-        type="button"
         class="share-option"
+        type="button"
         onclick="printQuote()"
       >
 
-        <div class="share-option-icon">
-          ⎙
+        <div class="share-icon">
+          PRINT
         </div>
 
-        <div class="share-option-text">
-
-          <strong>
-            Print Quote
-          </strong>
-
-          <span>
-            Open a clean print-ready homeowner quote.
-          </span>
-
+        <div class="share-text">
+          <strong>Print Quote</strong>
+          <span>Opens a clean print-ready homeowner quote.</span>
         </div>
 
       </button>
@@ -1713,98 +1588,77 @@
 
 </div>
 
-
 <div
-  class="toast"
   id="toast"
->
-</div>
-
-
+  class="toast"
+></div>
 
 <script>
+
+const FIELD_MEASUREMENT_ALLOWANCE = 0.05;
+
+const PUBLIC_BASE_URL =
+  "https://gusayoub67-oss.github.io/reactiv8-quick-quote/?v=8";
+
+const LOGO_DATA_URL =
+  "logo.webp";
+
+const BENEFITS = [
+  {
+    title: "DELAY A COSTLY ROOF REPLACEMENT",
+    text: "If your asphalt roof is still suitable for maintenance, rejuvenation may help postpone the much larger expense of replacing it."
+  },
+  {
+    title: "EXTEND YOUR ROOF’S USEFUL LIFE",
+    text: "Proactive maintenance can help keep an aging roof serviceable longer instead of waiting until deterioration becomes severe."
+  },
+  {
+    title: "PROTECT YOUR INVESTMENT",
+    text: "Maintaining your roof earlier helps address aging before more expensive roofing problems develop."
+  },
+  {
+    title: "LESS WASTE. LESS DISRUPTION.",
+    text: "Keeping a serviceable roof in place avoids an unnecessary tear-off and keeps shingles out of landfill longer."
+  },
+  {
+    title: "5-YEAR WARRANTY PROTECTION",
+    text: "Eligible Reactiv8 treatments are backed by a 5-year warranty for added confidence."
+  }
+];
 
 let currentQuote = null;
 let toastTimer = null;
 
+const $ = id =>
+  document.getElementById(id);
+
+const val = id =>
+  $(id).value.trim();
+
+const money = n =>
+  Math.round(n).toLocaleString();
+
+const num = n =>
+  Math.round(n).toLocaleString();
 
 
-function getValue(id) {
+function esc(s) {
 
-  return document
-    .getElementById(id)
-    .value
-    .trim();
-
-}
-
-
-
-function getSelectedPitch() {
-
-  const selectedPitch =
-    document.querySelector(
-      'input[name="pitch"]:checked'
-    );
-
-  return selectedPitch
-    ? parseFloat(selectedPitch.value)
-    : 4;
-
-}
-
-
-
-function getPitchMultiplier(pitch) {
-
-  return Math.sqrt(
-    1 +
-    Math.pow(
-      pitch / 12,
-      2
-    )
-  );
-
-}
-
-
-
-function escapeHtml(value) {
-
-  const div =
+  const d =
     document.createElement("div");
 
-  div.textContent =
-    value || "";
+  d.textContent =
+    s || "";
 
-  return div.innerHTML;
-
-}
-
-
-
-function formatMoney(value) {
-
-  return Math.round(value)
-    .toLocaleString();
+  return d.innerHTML;
 
 }
 
 
-
-function formatNumber(value) {
-
-  return Math.round(value)
-    .toLocaleString();
-
-}
-
-
-
-function safeFileName(value) {
+function safeFileName(s) {
 
   return (
-    value || "Quote"
+    s || "Quote"
   )
     .replace(
       /[^a-z0-9]+/gi,
@@ -1824,110 +1678,212 @@ function safeFileName(value) {
 }
 
 
+function pitchMultiplier(p) {
 
-function buildFullAddress() {
-
-  const street =
-    getValue(
-      "streetAddress"
-    );
-
-
-  const unit =
-    getValue(
-      "unit"
-    );
-
-
-  const city =
-    getValue(
-      "city"
-    );
-
-
-  const region =
-    getValue(
-      "region"
-    );
-
-
-  const postalCode =
-    getValue(
-      "postalCode"
-    );
-
-
-  const country =
-    document
-      .getElementById(
-        "country"
-      )
-      .value;
-
-
-  const streetLine =
-    unit
-      ? `${street}, ${unit}`
-      : street;
-
-
-  return (
-    `${streetLine}, ${city}, ${region} ${postalCode}, ${country}`
+  return Math.sqrt(
+    1 +
+    Math.pow(
+      p / 12,
+      2
+    )
   );
 
 }
 
 
+function selectedPitch() {
 
-function toggleBumpout() {
+  const r =
+    document.querySelector(
+      'input[name="pitch"]:checked'
+    );
 
-  const isOn =
-    document
-      .getElementById(
-        "hasBumpout"
+  return r
+    ? parseFloat(
+        r.value
       )
-      .checked;
+    : 4;
+
+}
 
 
-  document
-    .getElementById(
-      "bumpoutPanel"
-    )
+function pitchSvg(p) {
+
+  const y = {
+    3:36,
+    4:30,
+    6:23,
+    8:15,
+    10:10,
+    12:5
+  }[p] || 30;
+
+  return `
+    <svg
+      class="roof-svg"
+      viewBox="0 0 140 70"
+    >
+      <polyline
+        points="15,60 70,${y} 125,60"
+        fill="none"
+        stroke="#016837"
+        stroke-width="6"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+
+      <line
+        x1="20"
+        y1="64"
+        x2="120"
+        y2="64"
+        stroke="#8BC349"
+        stroke-width="4"
+      />
+    </svg>
+  `;
+
+}
+
+
+function buildPitchCards() {
+
+  const data = [
+    [3,"Low"],
+    [4,"Typical"],
+    [6,"Medium"],
+    [8,"Steep"],
+    [10,"Very Steep"],
+    [12,"Extreme"]
+  ];
+
+  $("pitchGrid").innerHTML =
+
+    data.map(
+
+      ([p,n]) =>
+
+        `
+        <label class="pitch-option">
+
+          <input
+            type="radio"
+            name="pitch"
+            value="${p}"
+            ${p === 4 ? "checked" : ""}
+          >
+
+          <div class="pitch-card">
+
+            ${pitchSvg(p)}
+
+            <div>
+
+              <div class="pitch-name">
+                ${n}
+              </div>
+
+              <div class="pitch-value">
+                ${p}/12
+              </div>
+
+            </div>
+
+          </div>
+
+        </label>
+        `
+
+    ).join("");
+
+}
+
+
+function toggleMixedPitch() {
+
+  $("mixedPitchPanel")
     .style
     .display =
-      isOn
+
+      $("hasMixedPitch")
+        .checked
+
         ? "block"
+
         : "none";
 
 }
 
 
+function toggleBumpout() {
 
-function toggleGaragePitch() {
-
-  const samePitch =
-    document
-      .getElementById(
-        "sameGaragePitch"
-      )
-      .checked;
-
-
-  document
-    .getElementById(
-      "garagePitchWrap"
-    )
+  $("bumpoutPanel")
     .style
     .display =
-      samePitch
-        ? "none"
-        : "block";
+
+      $("hasBumpout")
+        .checked
+
+        ? "block"
+
+        : "none";
 
 }
 
 
+function toggleGaragePitch() {
 
-function validateRequiredAddress() {
+  $("garagePitchWrap")
+    .classList
+    .toggle(
+
+      "hidden",
+
+      $("sameGaragePitch")
+        .checked
+
+    );
+
+}
+
+
+function fullAddress() {
+
+  const street =
+    val(
+      "streetAddress"
+    );
+
+  const unit =
+    val(
+      "unit"
+    );
+
+  const city =
+    val(
+      "city"
+    );
+
+  const region =
+    val(
+      "region"
+    );
+
+  const postal =
+    val(
+      "postalCode"
+    );
+
+  const country =
+    $("country")
+      .value;
+
+  return `${street}${unit ? `, ${unit}` : ""}, ${city}, ${region} ${postal}, ${country}`;
+
+}
+
+
+function validateAddress() {
 
   const required = [
 
@@ -1953,25 +1909,21 @@ function validateRequiredAddress() {
 
   ];
 
-
   for (
-    const [id, message]
+    const [id,msg]
     of required
   ) {
 
     if (
-      !getValue(id)
+      !val(id)
     ) {
 
       alert(
-        message
+        msg
       );
 
-
-      document
-        .getElementById(id)
+      $(id)
         .focus();
-
 
       return false;
 
@@ -1979,712 +1931,905 @@ function validateRequiredAddress() {
 
   }
 
-
-  if (
-    !document
-      .getElementById(
-        "country"
-      )
-      .value
-  ) {
-
-    alert(
-      "Please select the country."
-    );
-
-
-    document
-      .getElementById(
-        "country"
-      )
-      .focus();
-
-
-    return false;
-
-  }
-
-
   return true;
 
 }
 
 
-
 function calculateQuote() {
 
-  const customerName =
-    getValue(
-      "customerName"
-    );
-
-
-  const phone =
-    getValue(
-      "phone"
-    );
-
-
-  const email =
-    getValue(
-      "email"
-    );
-
-
   if (
-    !validateRequiredAddress()
+    !validateAddress()
   ) {
 
     return;
 
   }
 
-
-  const fullAddress =
-    buildFullAddress();
-
-
-  const length =
+  const L =
     parseFloat(
-      document
-        .getElementById(
-          "length"
-        )
+      $("length")
         .value
     );
 
-
-  const width =
+  const W =
     parseFloat(
-      document
-        .getElementById(
-          "width"
-        )
+      $("width")
         .value
     );
 
-
-  const overhang =
+  const oh =
     parseFloat(
-      document
-        .getElementById(
-          "overhang"
-        )
+      $("overhang")
         .value
     );
 
-
-  const mainPitch =
-    getSelectedPitch();
-
-
-  const pricePerSqFt =
+  const rate =
     parseFloat(
-      document
-        .getElementById(
-          "pricePerSqFt"
-        )
+      $("pricePerSqFt")
         .value
     );
 
-
-  const hasBumpout =
-    document
-      .getElementById(
-        "hasBumpout"
-      )
-      .checked;
-
+  const p1 =
+    selectedPitch();
 
 
   if (
-    !length ||
-    length <= 0
+    !L ||
+    L <= 0
   ) {
 
     alert(
       "Please enter the main house length."
     );
 
-
-    document
-      .getElementById(
-        "length"
-      )
+    $("length")
       .focus();
-
 
     return;
 
   }
 
 
-
   if (
-    !width ||
-    width <= 0
+    !W ||
+    W <= 0
   ) {
 
     alert(
       "Please enter the main house width."
     );
 
-
-    document
-      .getElementById(
-        "width"
-      )
+    $("width")
       .focus();
-
 
     return;
 
   }
 
 
-
   if (
-    !pricePerSqFt ||
-    pricePerSqFt <= 0
+    !rate ||
+    rate <= 0
   ) {
 
     alert(
       "Please enter a valid price per square foot."
     );
 
-
-    document
-      .getElementById(
-        "pricePerSqFt"
-      )
+    $("pricePerSqFt")
       .focus();
-
 
     return;
 
   }
 
 
+  const footprint =
 
-  const mainRoofLength =
-    length +
     (
-      overhang * 2
-    );
+      L +
+      2 * oh
+    )
 
+    *
 
-  const mainRoofWidth =
-    width +
     (
-      overhang * 2
+      W +
+      2 * oh
     );
 
 
-  const mainProjectedArea =
-    mainRoofLength *
-    mainRoofWidth;
-
-
-  const mainPitchMultiplier =
-    getPitchMultiplier(
-      mainPitch
-    );
-
-
-  const mainRoofArea =
-    mainProjectedArea *
-    mainPitchMultiplier;
-
-
-
-  let bumpoutWidth =
-    0;
-
-
-  let bumpoutDepth =
-    0;
-
-
-  let bumpoutOverhang =
-    0;
-
-
-  let garagePitch =
-    mainPitch;
-
-
-  let garagePitchMultiplier =
-    mainPitchMultiplier;
-
-
-  let bumpoutProjectedArea =
-    0;
-
-
-  let bumpoutRoofArea =
-    0;
-
+  let mainArea;
 
 
   if (
-    hasBumpout
+    $("hasMixedPitch")
+      .checked
   ) {
 
-    bumpoutWidth =
+    const p2 =
       parseFloat(
-        document
-          .getElementById(
-            "bumpoutWidth"
-          )
+        $("secondaryPitch")
           .value
       );
 
-
-    bumpoutDepth =
+    const share =
       parseFloat(
-        document
-          .getElementById(
-            "bumpoutDepth"
-          )
+        $("secondaryShare")
           .value
       );
 
 
     if (
-      !bumpoutWidth ||
-      bumpoutWidth <= 0
+      p2 === p1
+    ) {
+
+      alert(
+        "Please choose a different secondary roof pitch, or turn mixed pitch off."
+      );
+
+      return;
+
+    }
+
+
+    mainArea =
+
+      footprint
+
+      *
+
+      (
+        (
+          1 -
+          share
+        )
+        *
+        pitchMultiplier(
+          p1
+        )
+
+        +
+
+        share
+        *
+        pitchMultiplier(
+          p2
+        )
+      );
+
+  }
+
+  else {
+
+    mainArea =
+
+      footprint
+
+      *
+
+      pitchMultiplier(
+        p1
+      );
+
+  }
+
+
+  let garageArea =
+    0;
+
+  let garagePitch =
+    p1;
+
+  let bw =
+    0;
+
+  let bd =
+    0;
+
+
+  if (
+    $("hasBumpout")
+      .checked
+  ) {
+
+    bw =
+      parseFloat(
+        $("bumpoutWidth")
+          .value
+      );
+
+    bd =
+      parseFloat(
+        $("bumpoutDepth")
+          .value
+      );
+
+
+    if (
+      !bw ||
+      bw <= 0
     ) {
 
       alert(
         "Please enter the garage/addition width."
       );
 
-
-      document
-        .getElementById(
-          "bumpoutWidth"
-        )
-        .focus();
-
-
       return;
 
     }
 
 
     if (
-      !bumpoutDepth ||
-      bumpoutDepth <= 0
+      !bd ||
+      bd <= 0
     ) {
 
       alert(
         "Please enter how far the garage/addition sticks out."
       );
 
-
-      document
-        .getElementById(
-          "bumpoutDepth"
-        )
-        .focus();
-
-
       return;
 
     }
 
 
-
-    const bumpoutOverhangSetting =
-      document
-        .getElementById(
-          "bumpoutOverhang"
-        )
+    const set =
+      $("bumpoutOverhang")
         .value;
 
 
-    bumpoutOverhang =
-      bumpoutOverhangSetting === "same"
+    const goh =
 
-        ? overhang
+      set === "same"
+
+        ? oh
 
         : parseFloat(
-            bumpoutOverhangSetting
+            set
           );
 
 
-
-    const sameGaragePitch =
-      document
-        .getElementById(
-          "sameGaragePitch"
-        )
-        .checked;
-
-
     if (
-      !sameGaragePitch
+      !$("sameGaragePitch")
+        .checked
     ) {
 
       garagePitch =
         parseFloat(
-          document
-            .getElementById(
-              "garagePitch"
-            )
+          $("garagePitch")
             .value
         );
 
     }
 
 
+    const addDepth =
 
-    garagePitchMultiplier =
-      getPitchMultiplier(
-        garagePitch
-      );
-
-
-
-    /*
-      Only the portion projecting beyond the main house
-      is added.
-
-      The main roof already includes its own front overhang.
-
-      If the garage overhang differs from the main roof,
-      the additional depth is adjusted accordingly.
-    */
-
-    const additionalDepth =
       Math.max(
 
         0,
 
-        bumpoutDepth
+        bd
         +
-        bumpoutOverhang
+        goh
         -
-        overhang
+        oh
 
       );
 
 
-    const projectedWidth =
-      bumpoutWidth
+    const projWidth =
+
+      bw
       +
-      (
-        bumpoutOverhang * 2
+      2 * goh;
+
+
+    garageArea =
+
+      projWidth
+
+      *
+
+      addDepth
+
+      *
+
+      pitchMultiplier(
+        garagePitch
       );
-
-
-    bumpoutProjectedArea =
-      projectedWidth
-      *
-      additionalDepth;
-
-
-    bumpoutRoofArea =
-      bumpoutProjectedArea
-      *
-      garagePitchMultiplier;
 
   }
 
 
+  const rawArea =
 
-  const totalRoofArea =
-    mainRoofArea
+    mainArea
     +
-    bumpoutRoofArea;
+    garageArea;
 
 
-  const totalPrice =
-    totalRoofArea
+  const pricingArea =
+
+    rawArea
+
     *
-    pricePerSqFt;
 
+    (
+      1
+      +
+      FIELD_MEASUREMENT_ALLOWANCE
+    );
+
+
+  const price =
+
+    pricingArea
+
+    *
+
+    rate;
+
+
+  const address =
+    fullAddress();
+
+
+  const name =
+    val(
+      "customerName"
+    );
 
 
   let summary =
-    "";
 
+    name
 
-  if (
-    customerName
-  ) {
+      ? `<strong>Homeowner:</strong> ${esc(name)}<br>`
 
-    summary +=
-      `<strong>Homeowner:</strong> ${escapeHtml(customerName)}<br>`;
-
-  }
+      : "";
 
 
   summary +=
-    `<strong>Property:</strong> ${escapeHtml(fullAddress)}`;
+
+    `<strong>Property:</strong> ${esc(address)}`;
 
 
   if (
-    phone
-  ) {
-
-    summary +=
-      `<br><strong>Phone:</strong> ${escapeHtml(phone)}`;
-
-  }
-
-
-  if (
-    email
-  ) {
-
-    summary +=
-      `<br><strong>Email:</strong> ${escapeHtml(email)}`;
-
-  }
-
-
-
-  const customerSummary =
-    document
-      .getElementById(
-        "customerSummary"
-      );
-
-
-  customerSummary.innerHTML =
-    summary;
-
-
-  customerSummary.style.display =
-    "block";
-
-
-
-  document
-    .getElementById(
-      "roofArea"
+    val(
+      "phone"
     )
-    .innerText =
-      `${formatNumber(totalRoofArea)} sq ft`;
+  ) {
 
+    summary +=
+
+      `<br><strong>Phone:</strong> ${esc(val("phone"))}`;
+
+  }
+
+
+  if (
+    val(
+      "email"
+    )
+  ) {
+
+    summary +=
+
+      `<br><strong>Email:</strong> ${esc(val("email"))}`;
+
+  }
+
+
+  $("customerSummary")
+    .innerHTML =
+      summary;
+
+
+  $("customerSummary")
+    .style
+    .display =
+      "block";
+
+
+  $("roofArea")
+    .textContent =
+
+      `${num(rawArea)} sq ft`;
 
 
   let breakdown =
-    `Main house: ${formatNumber(mainRoofArea)} sq ft`;
+
+    `Main house: ${num(mainArea)} sq ft`;
 
 
   if (
-    hasBumpout
+    $("hasBumpout")
+      .checked
   ) {
 
     breakdown +=
-      `<br>Garage / addition: ${formatNumber(bumpoutRoofArea)} sq ft`;
+
+      `<br>Garage / addition: ${num(garageArea)} sq ft`;
 
   }
 
 
-  document
-    .getElementById(
-      "areaBreakdown"
-    )
+  $("areaBreakdown")
     .innerHTML =
       breakdown;
 
 
+  $("quotePrice")
+    .textContent =
 
-  document
-    .getElementById(
-      "quotePrice"
-    )
-    .innerText =
-      `$${formatMoney(totalPrice)}`;
+      `$${money(price)}`;
 
 
+  $("priceRate")
+    .textContent =
 
-  document
-    .getElementById(
-      "priceRate"
-    )
-    .innerText =
-      `Based on $${pricePerSqFt.toFixed(2)} per sq ft`;
-
+      `Pricing uses a ${Math.round(FIELD_MEASUREMENT_ALLOWANCE * 100)}% field-measurement allowance`;
 
 
   let details =
 
-    `Main adjusted footprint: ${formatNumber(mainProjectedArea)} sq ft`
+    `Raw estimated roof size: ${num(rawArea)} sq ft`
 
     +
 
-    `<br>Main roof pitch: ${mainPitch}/12`
+    `<br>Field measurement allowance: ${Math.round(FIELD_MEASUREMENT_ALLOWANCE * 100)}%`
 
     +
 
-    `<br>Main pitch multiplier: ${mainPitchMultiplier.toFixed(3)}`;
+    `<br>Pricing area: ${num(pricingArea)} sq ft`
 
+    +
+
+    `<br>Rate: $${rate.toFixed(2)}/sq ft`
+
+    +
+
+    `<br>Main pitch: ${p1}/12`;
 
 
   if (
-    hasBumpout
+    $("hasMixedPitch")
+      .checked
   ) {
 
     details +=
 
-      `<br><br>Garage/addition projection: ${bumpoutWidth} ft wide × ${bumpoutDepth} ft projection`
-
-      +
-
-      `<br>Garage/addition pitch: ${garagePitch}/12`;
+      `<br>Secondary pitch: ${$("secondaryPitch").value}/12 (${Math.round(parseFloat($("secondaryShare").value) * 100)}%)`;
 
   }
 
 
+  if (
+    $("hasBumpout")
+      .checked
+  ) {
 
-  document
-    .getElementById(
-      "calculationDetails"
-    )
+    details +=
+
+      `<br>Garage/addition: ${bw} ft × ${bd} ft projection; pitch ${garagePitch}/12`;
+
+  }
+
+
+  $("calculationDetails")
     .innerHTML =
       details;
 
 
-
   currentQuote = {
 
+    v:
+      8,
+
     customerName:
-      customerName,
-
-    phone:
-      phone,
-
-    email:
-      email,
+      name,
 
     fullAddress:
-      fullAddress,
+      address,
 
     streetAddress:
-      getValue(
+      val(
         "streetAddress"
       ),
 
-    unit:
-      getValue(
-        "unit"
-      ),
-
-    city:
-      getValue(
-        "city"
-      ),
-
-    region:
-      getValue(
-        "region"
-      ),
-
-    postalCode:
-      getValue(
-        "postalCode"
-      ),
-
-    country:
-      document
-        .getElementById(
-          "country"
-        )
-        .value,
-
     totalRoofArea:
       Math.round(
-        totalRoofArea
+        rawArea
       ),
-
-    mainRoofArea:
-      Math.round(
-        mainRoofArea
-      ),
-
-    bumpoutRoofArea:
-      Math.round(
-        bumpoutRoofArea
-      ),
-
-    hasBumpout:
-      hasBumpout,
 
     totalPrice:
       Math.round(
-        totalPrice
+        price
       )
 
   };
 
 
-
-  document
-    .getElementById(
-      "shareButton"
-    )
-    .style.display =
+  $("shareButton")
+    .style
+    .display =
       "block";
 
 }
 
 
+function encodePayload(o) {
 
-function buildCustomerQuoteText() {
+  const bytes =
+    new TextEncoder()
+      .encode(
+        JSON.stringify(
+          o
+        )
+      );
 
-  if (
-    !currentQuote
+
+  let s =
+    "";
+
+
+  for (
+    const x
+    of bytes
   ) {
 
-    return "";
+    s +=
+      String.fromCharCode(
+        x
+      );
 
   }
 
 
-  const nameLine =
-    currentQuote.customerName
+  return btoa(
+    s
+  )
+    .replace(
+      /\+/g,
+      "-"
+    )
+    .replace(
+      /\//g,
+      "_"
+    )
+    .replace(
+      /=+$/g,
+      ""
+    );
 
-      ? `Homeowner: ${currentQuote.customerName}\n`
-
-      : "";
+}
 
 
-  return (
+function decodePayload(s) {
 
-    `Reactiv8 Roof Maintenance Quote\n\n`
+  s =
+    s
+      .replace(
+        /-/g,
+        "+"
+      )
+      .replace(
+        /_/g,
+        "/"
+      );
 
-    +
 
-    nameLine
+  while (
+    s.length % 4
+  ) {
 
-    +
+    s +=
+      "=";
 
-    `Property: ${currentQuote.fullAddress}\n\n`
+  }
 
-    +
 
-    `Estimated roof size: ${currentQuote.totalRoofArea.toLocaleString()} sq ft\n`
+  const bin =
+    atob(
+      s
+    );
 
-    +
 
-    `Estimated Reactiv8 treatment: $${currentQuote.totalPrice.toLocaleString()}\n\n`
+  const bytes =
+    new Uint8Array(
+      bin.length
+    );
 
-    +
 
-    `Protect Your Roof. Extend Its Useful Life.\n\n`
+  for (
+    let i = 0;
+    i < bin.length;
+    i++
+  ) {
 
-    +
+    bytes[i] =
+      bin.charCodeAt(
+        i
+      );
 
-    `This is an approximate field quote. Final treatment suitability and scope are subject to roof condition and verification.`
+  }
+
+
+  return JSON.parse(
+
+    new TextDecoder()
+      .decode(
+        bytes
+      )
 
   );
 
 }
 
+
+function quotePayload() {
+
+  return {
+
+    v:
+      8,
+
+    n:
+      currentQuote.customerName
+      ||
+      "",
+
+    a:
+      currentQuote.fullAddress,
+
+    s:
+      currentQuote.totalRoofArea,
+
+    p:
+      currentQuote.totalPrice
+
+  };
+
+}
+
+
+function buildPublicLink() {
+
+  return `${PUBLIC_BASE_URL}#quote=${encodePayload(quotePayload())}`;
+
+}
+
+
+function buildPreviewLink() {
+
+  const base =
+    location.href
+      .split(
+        "#"
+      )[0];
+
+
+  return `${base}#quote=${encodePayload(quotePayload())}`;
+
+}
+
+
+function renderBenefits() {
+
+  $("publicBenefits")
+    .innerHTML =
+
+      BENEFITS
+        .map(
+
+          (
+            b,
+            i
+          ) =>
+
+            `
+            <div class="benefit">
+
+              <div class="benefit-num">
+                ${i + 1}
+              </div>
+
+              <div>
+
+                <strong>
+                  ${b.title}
+                </strong>
+
+                <span>
+                  ${b.text}
+                </span>
+
+              </div>
+
+            </div>
+            `
+
+        )
+        .join("");
+
+}
+
+
+function renderPublic(q) {
+
+  currentQuote = {
+
+    v:
+      q.v || 8,
+
+    customerName:
+      q.n || "",
+
+    fullAddress:
+      q.a,
+
+    totalRoofArea:
+      Number(
+        q.s
+      ),
+
+    totalPrice:
+      Number(
+        q.p
+      ),
+
+    streetAddress:
+
+      (
+        q.a
+        ||
+        "Quote"
+      )
+        .split(
+          ","
+        )[0]
+
+  };
+
+
+  $("calculatorView")
+    .hidden =
+      true;
+
+
+  $("publicQuoteView")
+    .hidden =
+      false;
+
+
+  $("publicLogo")
+    .src =
+      LOGO_DATA_URL;
+
+
+  if (
+    currentQuote.customerName
+  ) {
+
+    $("publicHomeownerBlock")
+      .hidden =
+        false;
+
+
+    $("publicHomeowner")
+      .textContent =
+        currentQuote.customerName;
+
+  }
+
+  else {
+
+    $("publicHomeownerBlock")
+      .hidden =
+        true;
+
+  }
+
+
+  $("publicAddress")
+    .textContent =
+      currentQuote.fullAddress;
+
+
+  $("publicRoofArea")
+    .textContent =
+
+      `${currentQuote.totalRoofArea.toLocaleString()} sq ft`;
+
+
+  $("publicPrice")
+    .textContent =
+
+      `$${currentQuote.totalPrice.toLocaleString()}`;
+
+
+  renderBenefits();
+
+}
+
+
+function initPublic() {
+
+  if (
+    !location.hash
+      .startsWith(
+        "#quote="
+      )
+  ) {
+
+    return;
+
+  }
+
+
+  try {
+
+    const q =
+      decodePayload(
+
+        location.hash
+          .slice(
+            7
+          )
+
+      );
+
+
+    if (
+      !q
+      ||
+      !q.a
+      ||
+      !Number.isFinite(
+        Number(
+          q.s
+        )
+      )
+      ||
+      !Number.isFinite(
+        Number(
+          q.p
+        )
+      )
+    ) {
+
+      throw new Error(
+        "Bad quote"
+      );
+
+    }
+
+
+    renderPublic(
+      q
+    );
+
+  }
+
+  catch (
+    e
+  ) {
+
+    console.error(
+      e
+    );
+
+
+    alert(
+      "This quote link is invalid or incomplete."
+    );
+
+  }
+
+}
 
 
 function openShareModal() {
@@ -2702,10 +2847,38 @@ function openShareModal() {
   }
 
 
-  document
-    .getElementById(
-      "shareModal"
-    )
+  const publicLink =
+    buildPublicLink();
+
+
+  $("shareLinkPreview")
+    .value =
+      publicLink;
+
+
+  $("openQuoteLinkButton")
+    .href =
+      buildPreviewLink();
+
+
+  const emailBody =
+
+    `Hi${currentQuote.customerName ? ` ${currentQuote.customerName}` : ""},
+
+Thank you for speaking with us. You can view your Reactiv8 roof maintenance quote here:
+
+${publicLink}
+
+Thank you.`;
+
+
+  $("emailQuoteLink")
+    .href =
+
+      `mailto:?subject=${encodeURIComponent("Your Reactiv8 Roof Maintenance Quote")}&body=${encodeURIComponent(emailBody)}`;
+
+
+  $("shareModal")
     .classList
     .add(
       "show"
@@ -2714,13 +2887,9 @@ function openShareModal() {
 }
 
 
-
 function closeShareModal() {
 
-  document
-    .getElementById(
-      "shareModal"
-    )
+  $("shareModal")
     .classList
     .remove(
       "show"
@@ -2729,11 +2898,10 @@ function closeShareModal() {
 }
 
 
-
-function handleOverlayClick(event) {
+function overlayClick(e) {
 
   if (
-    event.target.id ===
+    e.target.id ===
     "shareModal"
   ) {
 
@@ -2744,42 +2912,163 @@ function handleOverlayClick(event) {
 }
 
 
+async function copyText(t) {
 
-document.addEventListener(
+  if (
+    navigator.clipboard
+    &&
+    window.isSecureContext
+  ) {
 
-  "keydown",
+    try {
 
-  function(event) {
+      await navigator
+        .clipboard
+        .writeText(
+          t
+        );
 
-    if (
-      event.key ===
-      "Escape"
+
+      return true;
+
+    }
+
+    catch (
+      e
     ) {
-
-      closeShareModal();
 
     }
 
   }
 
-);
+
+  const a =
+    document.createElement(
+      "textarea"
+    );
 
 
+  a.value =
+    t;
 
-function showToast(message) {
 
-  const toast =
-    document
-      .getElementById(
-        "toast"
+  a.style.position =
+    "fixed";
+
+
+  a.style.opacity =
+    "0";
+
+
+  document
+    .body
+    .appendChild(
+      a
+    );
+
+
+  a.select();
+
+
+  let ok =
+    false;
+
+
+  try {
+
+    ok =
+      document.execCommand(
+        "copy"
       );
 
+  }
 
-  toast.textContent =
-    message;
+  catch (
+    e
+  ) {
+
+  }
 
 
-  toast
+  a.remove();
+
+
+  return ok;
+
+}
+
+
+async function copyQuoteLink() {
+
+  const link =
+    buildPublicLink();
+
+
+  $("shareLinkPreview")
+    .value =
+      link;
+
+
+  $("shareLinkPreview")
+    .select();
+
+
+  if (
+    await copyText(
+      link
+    )
+  ) {
+
+    toast(
+      "Quote link copied"
+    );
+
+  }
+
+  else {
+
+    alert(
+      "The link is selected. Press Ctrl+C to copy it."
+    );
+
+  }
+
+}
+
+
+async function copyCurrentPageLink() {
+
+  if (
+    await copyText(
+      location.href
+    )
+  ) {
+
+    toast(
+      "Quote link copied"
+    );
+
+  }
+
+  else {
+
+    alert(
+      "Copy the address from your browser address bar."
+    );
+
+  }
+
+}
+
+
+function toast(m) {
+
+  $("toast")
+    .textContent =
+      m;
+
+
+  $("toast")
     .classList
     .add(
       "show"
@@ -2794,15 +3083,13 @@ function showToast(message) {
   toastTimer =
     setTimeout(
 
-      function() {
+      () =>
 
-        toast
+        $("toast")
           .classList
           .remove(
             "show"
-          );
-
-      },
+          ),
 
       2200
 
@@ -2811,250 +3098,130 @@ function showToast(message) {
 }
 
 
+function loadLogo() {
 
-async function copyTextReliable(text) {
+  return new Promise(
 
-  if (
-    navigator.clipboard
-    &&
-    window.isSecureContext
-  ) {
+    (
+      resolve,
+      reject
+    ) => {
 
-    try {
-
-      await navigator
-        .clipboard
-        .writeText(
-          text
-        );
+      const img =
+        new Image();
 
 
-      return true;
+      img.onload =
+        () =>
+          resolve(
+            img
+          );
+
+
+      img.onerror =
+        reject;
+
+
+      img.src =
+        LOGO_DATA_URL;
 
     }
 
-    catch (error) {
-
-      // Continue to fallback method.
-
-    }
-
-  }
-
-
-
-  const textarea =
-    document
-      .createElement(
-        "textarea"
-      );
-
-
-  textarea.value =
-    text;
-
-
-  textarea.setAttribute(
-    "readonly",
-    ""
   );
 
-
-  textarea.style.position =
-    "fixed";
-
-
-  textarea.style.opacity =
-    "0";
-
-
-  document
-    .body
-    .appendChild(
-      textarea
-    );
-
-
-  textarea.focus();
-
-  textarea.select();
-
-
-
-  let copied =
-    false;
-
-
-  try {
-
-    copied =
-      document.execCommand(
-        "copy"
-      );
-
-  }
-
-  catch (error) {
-
-    copied =
-      false;
-
-  }
-
-
-
-  document
-    .body
-    .removeChild(
-      textarea
-    );
-
-
-  return copied;
-
 }
 
 
-
-async function copyQuote() {
-
-  if (
-    !currentQuote
-  ) {
-
-    return;
-
-  }
-
-
-  const success =
-    await copyTextReliable(
-      buildCustomerQuoteText()
-    );
-
-
-  if (
-    success
-  ) {
-
-    showToast(
-      "Quote copied"
-    );
-
-
-    closeShareModal();
-
-  }
-
-  else {
-
-    alert(
-      "Copy was blocked by this browser. Please use Share Quote instead."
-    );
-
-  }
-
-}
-
-
-
-function roundedRectPath(
+function roundRect(
   ctx,
   x,
   y,
-  width,
-  height,
-  radius
+  w,
+  h,
+  r
 ) {
 
-  const r =
+  const rr =
     Math.min(
-      radius,
-      width / 2,
-      height / 2
+      r,
+      w / 2,
+      h / 2
     );
 
 
   ctx.beginPath();
 
-
   ctx.moveTo(
-    x + r,
+    x + rr,
     y
   );
-
 
   ctx.lineTo(
-    x + width - r,
+    x + w - rr,
     y
   );
 
-
   ctx.quadraticCurveTo(
-    x + width,
+    x + w,
     y,
-    x + width,
-    y + r
+    x + w,
+    y + rr
   );
-
 
   ctx.lineTo(
-    x + width,
-    y + height - r
+    x + w,
+    y + h - rr
   );
-
 
   ctx.quadraticCurveTo(
-    x + width,
-    y + height,
-    x + width - r,
-    y + height
+    x + w,
+    y + h,
+    x + w - rr,
+    y + h
   );
-
 
   ctx.lineTo(
-    x + r,
-    y + height
+    x + rr,
+    y + h
   );
-
 
   ctx.quadraticCurveTo(
     x,
-    y + height,
+    y + h,
     x,
-    y + height - r
+    y + h - rr
   );
-
 
   ctx.lineTo(
     x,
-    y + r
+    y + rr
   );
-
 
   ctx.quadraticCurveTo(
     x,
     y,
-    x + r,
+    x + rr,
     y
   );
-
 
   ctx.closePath();
 
 }
 
 
-
-function wrapCanvasText(
+function wrap(
   ctx,
   text,
   x,
   y,
-  maxWidth,
-  lineHeight,
+  max,
+  line,
   align = "left"
 ) {
+
+  ctx.textAlign =
+    align;
+
 
   const words =
     text.split(
@@ -3062,17 +3229,12 @@ function wrapCanvasText(
     );
 
 
-  let line =
+  let current =
     "";
 
 
   let currentY =
     y;
-
-
-  ctx.textAlign =
-    align;
-
 
 
   for (
@@ -3081,59 +3243,61 @@ function wrapCanvasText(
     i++
   ) {
 
-    const testLine =
-      line
+    const test =
+
+      current
+
       +
+
       words[i]
+
       +
+
       " ";
 
 
-    const width =
-      ctx
-        .measureText(
-          testLine
-        )
-        .width;
-
-
     if (
-      width > maxWidth
+      ctx.measureText(
+        test
+      )
+      .width > max
       &&
       i > 0
     ) {
 
       ctx.fillText(
-        line.trim(),
+        current.trim(),
         x,
         currentY
       );
 
 
-      line =
+      current =
+
         words[i]
+
         +
+
         " ";
 
 
       currentY +=
-        lineHeight;
+        line;
 
     }
 
     else {
 
-      line =
-        testLine;
+      current =
+        test;
 
     }
 
   }
 
 
-
   ctx.fillText(
-    line.trim(),
+    current.trim(),
     x,
     currentY
   );
@@ -3144,72 +3308,23 @@ function wrapCanvasText(
 }
 
 
-
-function loadLogo() {
-
-  return new Promise(
-
-    function(
-      resolve,
-      reject
-    ) {
-
-      const image =
-        new Image();
-
-
-      image.onload =
-        function() {
-
-          resolve(
-            image
-          );
-
-        };
-
-
-      image.onerror =
-        function() {
-
-          reject(
-            new Error(
-              "Logo could not be loaded."
-            )
-          );
-
-        };
-
-
-      image.src =
-        "logo.webp";
-
-    }
-
-  );
-
-}
-
-
-
-async function createQuoteCanvas() {
+async function quoteCanvas() {
 
   if (
     !currentQuote
   ) {
 
     throw new Error(
-      "Please calculate the quote first."
+      "No quote"
     );
 
   }
 
 
-
   const canvas =
-    document
-      .createElement(
-        "canvas"
-      );
+    document.createElement(
+      "canvas"
+    );
 
 
   canvas.width =
@@ -3217,19 +3332,17 @@ async function createQuoteCanvas() {
 
 
   canvas.height =
-    1350;
+    1900;
 
 
   const ctx =
-    canvas
-      .getContext(
-        "2d"
-      );
-
+    canvas.getContext(
+      "2d"
+    );
 
 
   ctx.fillStyle =
-    "#FFFFFF";
+    "#fff";
 
 
   ctx.fillRect(
@@ -3238,7 +3351,6 @@ async function createQuoteCanvas() {
     canvas.width,
     canvas.height
   );
-
 
 
   ctx.fillStyle =
@@ -3253,90 +3365,48 @@ async function createQuoteCanvas() {
   );
 
 
-
-  try {
-
-    const logo =
-      await loadLogo();
+  const logo =
+    await loadLogo();
 
 
-    const maxWidth =
-      620;
+  const ratio =
+    Math.min(
 
-
-    const maxHeight =
-      220;
-
-
-    const ratio =
-      Math.min(
-
-        maxWidth
-        /
-        logo.width,
-
-        maxHeight
-        /
-        logo.height
-
-      );
-
-
-    const logoWidth =
-      logo.width
-      *
-      ratio;
-
-
-    const logoHeight =
-      logo.height
-      *
-      ratio;
-
-
-    const logoX =
-      (
-        1080
-        -
-        logoWidth
-      )
+      620
       /
-      2;
+      logo.width,
 
-
-
-    ctx.drawImage(
-      logo,
-      logoX,
-      105,
-      logoWidth,
-      logoHeight
-    );
-
-  }
-
-  catch (error) {
-
-    ctx.fillStyle =
-      "#016837";
-
-
-    ctx.font =
-      "bold 72px Arial";
-
-
-    ctx.textAlign =
-      "center";
-
-
-    ctx.fillText(
-      "Reactiv8",
-      540,
       210
+      /
+      logo.height
+
     );
 
-  }
 
+  const logoWidth =
+    logo.width
+    *
+    ratio;
+
+
+  const logoHeight =
+    logo.height
+    *
+    ratio;
+
+
+  ctx.drawImage(
+    logo,
+    (
+      1080 -
+      logoWidth
+    )
+    /
+    2,
+    105,
+    logoWidth,
+    logoHeight
+  );
 
 
   ctx.textAlign =
@@ -3354,9 +3424,8 @@ async function createQuoteCanvas() {
   ctx.fillText(
     "ROOF MAINTENANCE QUOTE",
     540,
-    360
+    345
   );
-
 
 
   ctx.textAlign =
@@ -3364,12 +3433,11 @@ async function createQuoteCanvas() {
 
 
   ctx.fillStyle =
-    "#000000";
+    "#000";
 
 
   let y =
-    445;
-
+    420;
 
 
   if (
@@ -3377,7 +3445,7 @@ async function createQuoteCanvas() {
   ) {
 
     ctx.font =
-      "bold 25px Arial";
+      "bold 24px Arial";
 
 
     ctx.fillText(
@@ -3399,14 +3467,13 @@ async function createQuoteCanvas() {
 
 
     y +=
-      105;
+      100;
 
   }
 
 
-
   ctx.font =
-    "bold 25px Arial";
+    "bold 24px Arial";
 
 
   ctx.fillText(
@@ -3421,28 +3488,21 @@ async function createQuoteCanvas() {
 
 
   y =
-    wrapCanvasText(
-
+    wrap(
       ctx,
-
       currentQuote.fullAddress,
-
       100,
-
       y + 40,
-
       880,
-
-      40,
-
-      "left"
-
+      38
     );
 
 
-  y +=
-    75;
-
+  const quoteY =
+    Math.max(
+      y + 65,
+      585
+    );
 
 
   ctx.fillStyle =
@@ -3457,12 +3517,12 @@ async function createQuoteCanvas() {
     5;
 
 
-  roundedRectPath(
+  roundRect(
     ctx,
     100,
-    y,
+    quoteY,
     880,
-    360,
+    320,
     28
   );
 
@@ -3472,13 +3532,12 @@ async function createQuoteCanvas() {
   ctx.stroke();
 
 
-
   ctx.textAlign =
     "center";
 
 
   ctx.fillStyle =
-    "#555555";
+    "#555";
 
 
   ctx.font =
@@ -3488,9 +3547,8 @@ async function createQuoteCanvas() {
   ctx.fillText(
     "ESTIMATED ROOF SIZE",
     540,
-    y + 70
+    quoteY + 62
   );
-
 
 
   ctx.fillStyle =
@@ -3498,19 +3556,14 @@ async function createQuoteCanvas() {
 
 
   ctx.font =
-    "bold 52px Arial";
+    "bold 50px Arial";
 
 
   ctx.fillText(
-
     `${currentQuote.totalRoofArea.toLocaleString()} sq ft`,
-
     540,
-
-    y + 130
-
+    quoteY + 122
   );
-
 
 
   ctx.strokeStyle =
@@ -3526,22 +3579,21 @@ async function createQuoteCanvas() {
 
   ctx.moveTo(
     180,
-    y + 175
+    quoteY + 162
   );
 
 
   ctx.lineTo(
     900,
-    y + 175
+    quoteY + 162
   );
 
 
   ctx.stroke();
 
 
-
   ctx.fillStyle =
-    "#555555";
+    "#555";
 
 
   ctx.font =
@@ -3551,34 +3603,145 @@ async function createQuoteCanvas() {
   ctx.fillText(
     "ESTIMATED REACTIV8 TREATMENT",
     540,
-    y + 230
+    quoteY + 218
   );
-
 
 
   ctx.fillStyle =
-    "#000000";
+    "#000";
 
 
   ctx.font =
-    "bold 72px Arial";
+    "bold 68px Arial";
 
 
   ctx.fillText(
-
     `$${currentQuote.totalPrice.toLocaleString()}`,
-
     540,
+    quoteY + 292
+  );
 
-    y + 315
+
+  let benefitY =
+    quoteY + 390;
+
+
+  ctx.fillStyle =
+    "#016837";
+
+
+  ctx.font =
+    "bold 32px Arial";
+
+
+  ctx.fillText(
+    "WHY REJUVENATE YOUR ROOF?",
+    540,
+    benefitY
+  );
+
+
+  benefitY +=
+    55;
+
+
+  BENEFITS.forEach(
+
+    (
+      benefit,
+      index
+    ) => {
+
+      ctx.fillStyle =
+        "#8BC349";
+
+
+      ctx.beginPath();
+
+
+      ctx.arc(
+        120,
+        benefitY - 7,
+        17,
+        0,
+        Math.PI * 2
+      );
+
+
+      ctx.fill();
+
+
+      ctx.fillStyle =
+        "#000";
+
+
+      ctx.font =
+        "bold 18px Arial";
+
+
+      ctx.textAlign =
+        "center";
+
+
+      ctx.fillText(
+        String(
+          index + 1
+        ),
+        120,
+        benefitY
+      );
+
+
+      ctx.textAlign =
+        "left";
+
+
+      ctx.fillStyle =
+        "#016837";
+
+
+      ctx.font =
+        "bold 23px Arial";
+
+
+      ctx.fillText(
+        benefit.title,
+        160,
+        benefitY
+      );
+
+
+      ctx.fillStyle =
+        "#444";
+
+
+      ctx.font =
+        "24px Arial";
+
+
+      benefitY =
+
+        wrap(
+          ctx,
+          benefit.text,
+          160,
+          benefitY + 34,
+          810,
+          30,
+          "left"
+        )
+
+        +
+
+        50;
+
+    }
 
   );
 
 
-
-  const footerY =
-    y + 435;
-
+  ctx.textAlign =
+    "center";
 
 
   ctx.fillStyle =
@@ -3586,43 +3749,33 @@ async function createQuoteCanvas() {
 
 
   ctx.font =
-    "bold 30px Arial";
+    "bold 29px Arial";
 
 
   ctx.fillText(
-    "Protect Your Roof. Extend Its Useful Life.",
+    "Maintain today. Replace when you actually need to.",
     540,
-    footerY
+    benefitY + 10
   );
-
 
 
   ctx.fillStyle =
-    "#666666";
+    "#666";
 
 
   ctx.font =
-    "22px Arial";
+    "21px Arial";
 
 
-  wrapCanvasText(
-
+  wrap(
     ctx,
-
     "This is an approximate field quote based on the measurements available at the time. Final treatment suitability and scope are subject to roof condition and verification.",
-
     540,
-
-    footerY + 70,
-
+    benefitY + 70,
     820,
-
-    34,
-
+    30,
     "center"
-
   );
-
 
 
   ctx.fillStyle =
@@ -3631,346 +3784,30 @@ async function createQuoteCanvas() {
 
   ctx.fillRect(
     0,
-    1260,
+    1810,
     1080,
     90
   );
 
 
-
   ctx.fillStyle =
-    "#FFFFFF";
+    "#fff";
 
 
   ctx.font =
     "bold 24px Arial";
 
 
-  ctx.textAlign =
-    "center";
-
-
   ctx.fillText(
     "Reactiv8 • Roof Maintenance & Shingle Rejuvenation",
     540,
-    1315
+    1865
   );
-
 
 
   return canvas;
 
 }
-
-
-
-function canvasToBlob(canvas) {
-
-  return new Promise(
-
-    function(
-      resolve,
-      reject
-    ) {
-
-      canvas.toBlob(
-
-        function(blob) {
-
-          if (
-            blob
-          ) {
-
-            resolve(
-              blob
-            );
-
-          }
-
-          else {
-
-            reject(
-              new Error(
-                "Unable to create quote image."
-              )
-            );
-
-          }
-
-        },
-
-        "image/png",
-
-        0.95
-
-      );
-
-    }
-
-  );
-
-}
-
-
-
-async function shareToPhone() {
-
-  if (
-    !currentQuote
-  ) {
-
-    return;
-
-  }
-
-
-
-  try {
-
-    const canvas =
-      await createQuoteCanvas();
-
-
-    const blob =
-      await canvasToBlob(
-        canvas
-      );
-
-
-    const file =
-      new File(
-
-        [
-          blob
-        ],
-
-        "Reactiv8-Roof-Quote.png",
-
-        {
-          type:
-            "image/png"
-        }
-
-      );
-
-
-    const text =
-      buildCustomerQuoteText();
-
-
-
-    if (
-      navigator.share
-      &&
-      navigator.canShare
-      &&
-      navigator.canShare({
-        files:
-          [
-            file
-          ]
-      })
-    ) {
-
-      await navigator.share({
-
-        title:
-          "Reactiv8 Roof Maintenance Quote",
-
-        text:
-          "Here is your Reactiv8 roof maintenance quote.",
-
-        files:
-          [
-            file
-          ]
-
-      });
-
-
-      closeShareModal();
-
-
-      return;
-
-    }
-
-
-
-    if (
-      navigator.share
-    ) {
-
-      await navigator.share({
-
-        title:
-          "Reactiv8 Roof Maintenance Quote",
-
-        text:
-          text
-
-      });
-
-
-      closeShareModal();
-
-
-      return;
-
-    }
-
-
-
-    const copied =
-      await copyTextReliable(
-        text
-      );
-
-
-    if (
-      copied
-    ) {
-
-      showToast(
-        "Sharing is unavailable here. Quote copied instead."
-      );
-
-
-      closeShareModal();
-
-
-      return;
-
-    }
-
-
-
-    alert(
-      "Sharing is not supported by this browser. Try Save Quote Image or Download PDF."
-    );
-
-  }
-
-  catch (error) {
-
-    if (
-      error
-      &&
-      error.name ===
-      "AbortError"
-    ) {
-
-      return;
-
-    }
-
-
-    alert(
-      "The quote could not be shared. Try Save Quote Image or Download PDF."
-    );
-
-  }
-
-}
-
-
-
-async function saveQuoteImage() {
-
-  if (
-    !currentQuote
-  ) {
-
-    return;
-
-  }
-
-
-
-  try {
-
-    const canvas =
-      await createQuoteCanvas();
-
-
-    const blob =
-      await canvasToBlob(
-        canvas
-      );
-
-
-    const url =
-      URL.createObjectURL(
-        blob
-      );
-
-
-    const link =
-      document
-        .createElement(
-          "a"
-        );
-
-
-    link.href =
-      url;
-
-
-    link.download =
-      `Reactiv8-Quote-${safeFileName(currentQuote.streetAddress)}.png`;
-
-
-    document
-      .body
-      .appendChild(
-        link
-      );
-
-
-    link.click();
-
-
-    document
-      .body
-      .removeChild(
-        link
-      );
-
-
-    setTimeout(
-
-      function() {
-
-        URL.revokeObjectURL(
-          url
-        );
-
-      },
-
-      1000
-
-    );
-
-
-    showToast(
-      "Quote image saved"
-    );
-
-
-    closeShareModal();
-
-  }
-
-  catch (error) {
-
-    alert(
-      "Unable to create the quote image."
-    );
-
-  }
-
-}
-
 
 
 async function downloadPDF() {
@@ -3984,7 +3821,6 @@ async function downloadPDF() {
   }
 
 
-
   if (
     !window.jspdf
     ||
@@ -3992,26 +3828,24 @@ async function downloadPDF() {
   ) {
 
     alert(
-      "The PDF tool has not loaded yet. Please check your internet connection and try again."
+      "PDF tool has not loaded. Check your internet connection and try again."
     );
-
 
     return;
 
   }
 
 
-
   try {
 
     const canvas =
-      await createQuoteCanvas();
+      await quoteCanvas();
 
 
-    const imageData =
+    const image =
       canvas.toDataURL(
         "image/png",
-        1.0
+        1
       );
 
 
@@ -4036,7 +3870,6 @@ async function downloadPDF() {
       });
 
 
-
     const pageWidth =
       pdf
         .internal
@@ -4052,89 +3885,73 @@ async function downloadPDF() {
 
 
     const margin =
-      24;
-
-
-    const maxWidth =
-      pageWidth
-      -
-      (
-        margin * 2
-      );
-
-
-    const maxHeight =
-      pageHeight
-      -
-      (
-        margin * 2
-      );
+      20;
 
 
     const ratio =
       Math.min(
 
-        maxWidth
+        (
+          pageWidth
+          -
+          2 * margin
+        )
         /
         canvas.width,
 
-        maxHeight
+        (
+          pageHeight
+          -
+          2 * margin
+        )
         /
         canvas.height
 
       );
 
 
-    const imageWidth =
+    const width =
       canvas.width
       *
       ratio;
 
 
-    const imageHeight =
+    const height =
       canvas.height
       *
       ratio;
 
 
-    const x =
+    pdf.addImage(
+      image,
+      "PNG",
       (
         pageWidth
         -
-        imageWidth
+        width
       )
       /
-      2;
-
-
-    const y =
+      2,
       (
         pageHeight
         -
-        imageHeight
+        height
       )
       /
-      2;
-
-
-
-    pdf.addImage(
-      imageData,
-      "PNG",
-      x,
-      y,
-      imageWidth,
-      imageHeight
+      2,
+      width,
+      height
     );
 
 
     pdf.save(
-      `Reactiv8-Quote-${safeFileName(currentQuote.streetAddress)}.pdf`
+
+      `Reactiv8-Quote-${safeFileName(currentQuote.streetAddress || currentQuote.fullAddress)}.pdf`
+
     );
 
 
-
-    showToast(
+    toast(
       "PDF downloaded"
     );
 
@@ -4143,16 +3960,408 @@ async function downloadPDF() {
 
   }
 
-  catch (error) {
+  catch (
+    e
+  ) {
+
+    console.error(
+      e
+    );
+
 
     alert(
-      "Unable to create the PDF. Please try Print Quote instead."
+      "Unable to create PDF. Please try Print Quote instead."
     );
 
   }
 
 }
 
+
+async function saveQuoteImage() {
+
+  if (
+    !currentQuote
+  ) {
+
+    return;
+
+  }
+
+
+  try {
+
+    const canvas =
+      await quoteCanvas();
+
+
+    const blob =
+      await new Promise(
+
+        (
+          resolve,
+          reject
+        ) =>
+
+          canvas.toBlob(
+
+            b =>
+
+              b
+
+                ? resolve(
+                    b
+                  )
+
+                : reject(
+                    new Error(
+                      "PNG failed"
+                    )
+                  ),
+
+            "image/png",
+
+            .95
+
+          )
+
+      );
+
+
+    const url =
+      URL.createObjectURL(
+        blob
+      );
+
+
+    const a =
+      document.createElement(
+        "a"
+      );
+
+
+    a.href =
+      url;
+
+
+    a.download =
+
+      `Reactiv8-Quote-${safeFileName(currentQuote.streetAddress || currentQuote.fullAddress)}.png`;
+
+
+    document
+      .body
+      .appendChild(
+        a
+      );
+
+
+    a.click();
+
+
+    a.remove();
+
+
+    setTimeout(
+
+      () =>
+        URL.revokeObjectURL(
+          url
+        ),
+
+      1000
+
+    );
+
+
+    toast(
+      "Quote image saved"
+    );
+
+
+    closeShareModal();
+
+  }
+
+  catch (
+    e
+  ) {
+
+    console.error(
+      e
+    );
+
+
+    alert(
+      "Unable to create quote image."
+    );
+
+  }
+
+}
+
+
+function printHtml() {
+
+  const name =
+
+    currentQuote.customerName
+
+      ? `
+        <div class="l">
+          Homeowner
+        </div>
+
+        <div class="v">
+          ${esc(currentQuote.customerName)}
+        </div>
+      `
+
+      : "";
+
+
+  return `
+  <!DOCTYPE html>
+
+  <html>
+
+  <head>
+
+    <meta charset="UTF-8">
+
+    <title>
+      Reactiv8 Roof Maintenance Quote
+    </title>
+
+    <style>
+
+      *{
+        box-sizing:border-box
+      }
+
+      body{
+        font-family:Arial;
+        margin:0;
+        color:#000
+      }
+
+      .p{
+        max-width:760px;
+        margin:auto;
+        padding:28px 38px 34px;
+        border-top:8px solid #016837
+      }
+
+      .logo{
+        display:block;
+        width:300px;
+        max-width:90%;
+        margin:0 auto 14px
+      }
+
+      h1{
+        text-align:center;
+        color:#08663B;
+        font-size:25px;
+        margin:0 0 26px
+      }
+
+      .l{
+        color:#016837;
+        font-size:12px;
+        font-weight:bold;
+        text-transform:uppercase;
+        margin-top:14px
+      }
+
+      .v{
+        font-size:17px;
+        margin-top:3px;
+        line-height:1.35
+      }
+
+      .box{
+        margin-top:25px;
+        background:#F2F7EF;
+        border:3px solid #8BC349;
+        border-radius:16px;
+        padding:24px;
+        text-align:center
+      }
+
+      .ql{
+        font-size:12px;
+        font-weight:bold;
+        color:#555
+      }
+
+      .a{
+        font-size:31px;
+        font-weight:bold;
+        color:#016837;
+        margin:6px 0 17px
+      }
+
+      .d{
+        border-top:1px solid #D6E5D2;
+        margin:0 0 17px
+      }
+
+      .pr{
+        font-size:43px;
+        font-weight:bold;
+        margin-top:7px
+      }
+
+      .ben{
+        margin-top:24px
+      }
+
+      .ben h2{
+        text-align:center;
+        color:#016837;
+        font-size:20px
+      }
+
+      .b{
+        margin-top:9px
+      }
+
+      .b strong{
+        color:#016837;
+        font-size:12px
+      }
+
+      .b span{
+        display:block;
+        color:#444;
+        font-size:11px;
+        line-height:1.35
+      }
+
+      .tag{
+        text-align:center;
+        color:#08663B;
+        font-weight:bold;
+        font-size:18px;
+        margin-top:22px
+      }
+
+      .disc{
+        color:#666;
+        text-align:center;
+        font-size:10px;
+        line-height:1.4;
+        margin:14px auto 0
+      }
+
+      .f{
+        margin-top:24px;
+        background:#016837;
+        color:#fff;
+        padding:12px;
+        text-align:center;
+        font-size:11px
+      }
+
+    </style>
+
+  </head>
+
+  <body>
+
+    <div class="p">
+
+      <img
+        src="${LOGO_DATA_URL}"
+        class="logo"
+      >
+
+      <h1>
+        ROOF MAINTENANCE QUOTE
+      </h1>
+
+      ${name}
+
+      <div class="l">
+        Property
+      </div>
+
+      <div class="v">
+        ${esc(currentQuote.fullAddress)}
+      </div>
+
+      <div class="box">
+
+        <div class="ql">
+          ESTIMATED ROOF SIZE
+        </div>
+
+        <div class="a">
+          ${currentQuote.totalRoofArea.toLocaleString()} sq ft
+        </div>
+
+        <div class="d"></div>
+
+        <div class="ql">
+          ESTIMATED REACTIV8 TREATMENT
+        </div>
+
+        <div class="pr">
+          $${currentQuote.totalPrice.toLocaleString()}
+        </div>
+
+      </div>
+
+      <div class="ben">
+
+        <h2>
+          WHY REJUVENATE YOUR ROOF?
+        </h2>
+
+        ${
+          BENEFITS
+            .map(
+              b =>
+
+                `
+                <div class="b">
+                  <strong>
+                    ${b.title}
+                  </strong>
+
+                  <span>
+                    ${b.text}
+                  </span>
+                </div>
+                `
+            )
+            .join("")
+        }
+
+      </div>
+
+      <div class="tag">
+        Maintain today. Replace when you actually need to.
+      </div>
+
+      <div class="disc">
+        This is an approximate field quote based on the measurements available at the time.
+        Final treatment suitability and scope are subject to roof condition and verification.
+      </div>
+
+      <div class="f">
+        Reactiv8 • Roof Maintenance & Shingle Rejuvenation
+      </div>
+
+    </div>
+
+  </body>
+
+  </html>
+  `;
+
+}
 
 
 function printQuote() {
@@ -4166,291 +4375,67 @@ function printQuote() {
   }
 
 
-
-  const printWindow =
-    window.open(
-      "",
-      "_blank"
+  const iframe =
+    document.createElement(
+      "iframe"
     );
 
 
-  if (
-    !printWindow
-  ) {
+  iframe.style.cssText =
 
-    alert(
-      "Your browser blocked the print window. Please allow pop-ups and try again."
+    "position:fixed;right:0;bottom:0;width:0;height:0;border:0";
+
+
+  document
+    .body
+    .appendChild(
+      iframe
     );
 
 
-    return;
+  const doc =
+    iframe
+      .contentWindow
+      .document;
 
-  }
 
+  doc.open();
 
+  doc.write(
+    printHtml()
+  );
 
-  const logoUrl =
-    new URL(
-      "logo.webp",
-      window.location.href
-    )
-    .href;
+  doc.close();
 
 
+  setTimeout(
 
-  const customerName =
-    currentQuote.customerName
+    () => {
 
-      ? `<div class="label">Homeowner</div><div class="value">${escapeHtml(currentQuote.customerName)}</div>`
+      iframe
+        .contentWindow
+        .focus();
 
-      : "";
 
+      iframe
+        .contentWindow
+        .print();
 
 
-  printWindow.document.write(`
-
-    <!DOCTYPE html>
+      setTimeout(
 
-    <html>
-
-    <head>
-
-      <meta charset="UTF-8">
-
-      <title>
-        Reactiv8 Roof Maintenance Quote
-      </title>
-
-      <style>
-
-        * {
-          box-sizing: border-box;
-        }
-
-        body {
-          font-family: Arial, Helvetica, sans-serif;
-          margin: 0;
-          color: #000;
-        }
-
-        .page {
-          max-width: 760px;
-          margin: 0 auto;
-          padding: 34px 42px 46px;
-          border-top: 8px solid #016837;
-        }
+        () =>
+          iframe.remove(),
 
-        .logo {
-          display: block;
-          width: 320px;
-          max-width: 90%;
-          margin: 0 auto 18px;
-        }
+        1200
 
-        h1 {
-          text-align: center;
-          color: #08663B;
-          font-size: 26px;
-          margin: 0 0 34px;
-        }
+      );
 
-        .label {
-          color: #016837;
-          font-size: 13px;
-          font-weight: bold;
-          text-transform: uppercase;
-          margin-top: 18px;
-        }
+    },
 
-        .value {
-          font-size: 18px;
-          margin-top: 4px;
-          line-height: 1.4;
-        }
+    400
 
-        .quote-box {
-          margin-top: 34px;
-          background: #F2F7EF;
-          border: 3px solid #8BC349;
-          border-radius: 16px;
-          padding: 30px;
-          text-align: center;
-        }
-
-        .quote-label {
-          font-size: 13px;
-          font-weight: bold;
-          color: #555;
-        }
-
-        .area {
-          font-size: 34px;
-          font-weight: bold;
-          color: #016837;
-          margin: 7px 0 22px;
-        }
-
-        .divider {
-          border-top: 1px solid #D6E5D2;
-          margin: 0 0 22px;
-        }
-
-        .price {
-          font-size: 48px;
-          font-weight: bold;
-          margin-top: 8px;
-        }
-
-        .tagline {
-          text-align: center;
-          color: #08663B;
-          font-weight: bold;
-          font-size: 20px;
-          margin-top: 34px;
-        }
-
-        .disclaimer {
-          color: #666;
-          text-align: center;
-          font-size: 12px;
-          line-height: 1.5;
-          margin: 22px auto 0;
-          max-width: 620px;
-        }
-
-        .footer {
-          margin-top: 36px;
-          background: #016837;
-          color: #fff;
-          padding: 14px;
-          text-align: center;
-          font-size: 12px;
-        }
-
-        @media print {
-
-          .page {
-            max-width: none;
-          }
-
-        }
-
-      </style>
-
-    </head>
-
-
-    <body>
-
-      <div class="page">
-
-        <img
-          src="${logoUrl}"
-          class="logo"
-          alt="Reactiv8"
-        >
-
-
-        <h1>
-          ROOF MAINTENANCE QUOTE
-        </h1>
-
-
-        ${customerName}
-
-
-        <div class="label">
-          Property
-        </div>
-
-
-        <div class="value">
-          ${escapeHtml(currentQuote.fullAddress)}
-        </div>
-
-
-
-        <div class="quote-box">
-
-          <div class="quote-label">
-            ESTIMATED ROOF SIZE
-          </div>
-
-          <div class="area">
-            ${currentQuote.totalRoofArea.toLocaleString()} sq ft
-          </div>
-
-          <div class="divider">
-          </div>
-
-          <div class="quote-label">
-            ESTIMATED REACTIV8 TREATMENT
-          </div>
-
-          <div class="price">
-            $${currentQuote.totalPrice.toLocaleString()}
-          </div>
-
-        </div>
-
-
-
-        <div class="tagline">
-          Protect Your Roof. Extend Its Useful Life.
-        </div>
-
-
-        <div class="disclaimer">
-
-          This is an approximate field quote based on
-          the measurements available at the time.
-
-          Final treatment suitability and scope are
-          subject to roof condition and verification.
-
-        </div>
-
-
-        <div class="footer">
-          Reactiv8 • Roof Maintenance & Shingle Rejuvenation
-        </div>
-
-      </div>
-
-
-
-      <script>
-
-        window.onload =
-          function() {
-
-            setTimeout(
-
-              function() {
-
-                window.print();
-
-              },
-
-              250
-
-            );
-
-          };
-
-      <\/script>
-
-    </body>
-
-    </html>
-
-  `);
-
-
-
-  printWindow
-    .document
-    .close();
+  );
 
 
   closeShareModal();
@@ -4458,195 +4443,90 @@ function printQuote() {
 }
 
 
-
 function resetCalculator() {
 
-  const idsToClear = [
-
+  [
     "customerName",
-
     "phone",
-
     "email",
-
     "streetAddress",
-
     "unit",
-
     "city",
-
     "region",
-
     "postalCode",
-
     "length",
-
     "width",
-
     "bumpoutWidth",
-
     "bumpoutDepth",
-
     "notes"
+  ]
+    .forEach(
 
-  ];
+      id =>
+        $(id)
+          .value =
+            ""
 
-
-
-  idsToClear.forEach(
-
-    function(id) {
-
-      document
-        .getElementById(id)
-        .value =
-          "";
-
-    }
-
-  );
+    );
 
 
-
-  document
-    .getElementById(
-      "country"
-    )
+  $("country")
     .value =
       "United States";
 
 
-  document
-    .getElementById(
-      "overhang"
-    )
+  $("overhang")
     .value =
       "1";
 
 
-  document
-    .getElementById(
-      "pricePerSqFt"
-    )
+  $("pricePerSqFt")
     .value =
       "1.05";
 
 
-  document
-    .getElementById(
-      "hasBumpout"
-    )
+  $("hasMixedPitch")
     .checked =
       false;
 
 
-  document
-    .getElementById(
-      "bumpoutPanel"
-    )
-    .style
-    .display =
-      "none";
+  toggleMixedPitch();
 
 
-  document
-    .getElementById(
-      "bumpoutOverhang"
-    )
+  $("secondaryPitch")
+    .value =
+      "6";
+
+
+  $("secondaryShare")
+    .value =
+      "0.25";
+
+
+  $("hasBumpout")
+    .checked =
+      false;
+
+
+  toggleBumpout();
+
+
+  $("bumpoutOverhang")
     .value =
       "same";
 
 
-  document
-    .getElementById(
-      "sameGaragePitch"
-    )
+  $("sameGaragePitch")
     .checked =
       true;
 
 
-  document
-    .getElementById(
-      "garagePitchWrap"
-    )
-    .style
-    .display =
-      "none";
+  toggleGaragePitch();
 
 
-  document
-    .getElementById(
-      "garagePitch"
-    )
+  $("garagePitch")
     .value =
       "4";
-
-
-  document
-    .getElementById(
-      "roofArea"
-    )
-    .innerText =
-      "—";
-
-
-  document
-    .getElementById(
-      "areaBreakdown"
-    )
-    .innerHTML =
-      "";
-
-
-  document
-    .getElementById(
-      "quotePrice"
-    )
-    .innerText =
-      "—";
-
-
-  document
-    .getElementById(
-      "priceRate"
-    )
-    .innerText =
-      "";
-
-
-  document
-    .getElementById(
-      "calculationDetails"
-    )
-    .innerHTML =
-      "";
-
-
-  document
-    .getElementById(
-      "customerSummary"
-    )
-    .innerHTML =
-      "";
-
-
-  document
-    .getElementById(
-      "customerSummary"
-    )
-    .style
-    .display =
-      "none";
-
-
-  document
-    .getElementById(
-      "shareButton"
-    )
-    .style
-    .display =
-      "none";
-
 
 
   const defaultPitch =
@@ -4665,6 +4545,47 @@ function resetCalculator() {
   }
 
 
+  $("roofArea")
+    .textContent =
+      "—";
+
+
+  $("areaBreakdown")
+    .innerHTML =
+      "";
+
+
+  $("quotePrice")
+    .textContent =
+      "—";
+
+
+  $("priceRate")
+    .textContent =
+      "";
+
+
+  $("calculationDetails")
+    .innerHTML =
+      "";
+
+
+  $("customerSummary")
+    .innerHTML =
+      "";
+
+
+  $("customerSummary")
+    .style
+    .display =
+      "none";
+
+
+  $("shareButton")
+    .style
+    .display =
+      "none";
+
 
   currentQuote =
     null;
@@ -4673,17 +4594,51 @@ function resetCalculator() {
   closeShareModal();
 
 
-  window.scrollTo({
-
-    top:
-      0,
-
-    behavior:
-      "smooth"
-
+  scrollTo({
+    top:0,
+    behavior:"smooth"
   });
 
 }
+
+
+document.addEventListener(
+
+  "keydown",
+
+  e => {
+
+    if (
+      e.key ===
+      "Escape"
+    ) {
+
+      closeShareModal();
+
+    }
+
+  }
+
+);
+
+
+document.addEventListener(
+
+  "DOMContentLoaded",
+
+  () => {
+
+    buildPitchCards();
+
+    $("publicLogo")
+      .src =
+        LOGO_DATA_URL;
+
+    initPublic();
+
+  }
+
+);
 
 </script>
 
